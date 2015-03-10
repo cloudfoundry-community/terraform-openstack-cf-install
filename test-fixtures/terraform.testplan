@@ -1,0 +1,141 @@
+Refreshing Terraform state prior to plan...
+
+
+The Terraform execution plan has been generated and is shown below.
+Resources are shown in alphabetical order for quick scanning. Green resources
+will be created (or destroyed and then created if an existing resource
+exists), yellow resources are being changed in-place, and red resources
+will be destroyed.
+
+Note: You didn't specify an "-out" parameter to save this plan, so when
+"apply" is called, Terraform can't guarantee this is what will execute.
+
+[32m+ openstack_compute_instance_v2.bastion
+[0m    access_ip_v4:      "" => "<computed>"
+    access_ip_v6:      "" => "<computed>"
+    flavor_id:         "" => "<computed>"
+    flavor_name:       "" => "m1.medium"
+    floating_ip:       "" => "${openstack_networking_floatingip_v2.bastion_fp.address}"
+    image_id:          "" => "<computed>"
+    image_name:        "" => "ubuntu-14.04"
+    key_pair:          "" => "bastion-keypair-dave"
+    name:              "" => "bastion"
+    network.#:         "" => "1"
+    network.0.uuid:    "" => "${openstack_networking_network_v2.internal_net.id}"
+    region:            "" => "RegionOne"
+    security_groups.#: "" => "1"
+    security_groups.0: "" => "bastion-dave"
+[0m
+[0m[32m+ openstack_compute_keypair_v2.keypair
+[0m    name:       "" => "bastion-keypair-dave"
+    public_key: "" => "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArehSTw47xYftzz4Z2q3eHVDgkv0ZDiPDNoH+xiEJjSqrBCoJkyt7CvQYNNVxihjPq4jZqa7jytvfawKsZv0OamYoKR3xRsPVKT7TX28wZNKd3MQZmgBccrAHWWTpwFHKnXsjtzpr6tih+rX9e8mi2yRXARfMXIpwfBWAfMPr52ZGeLxJIAjBvwCIiDIRujspxD87aEYfGKq8DKDsEAoDA4boSb+No9tWDLRTc+ubBbJ1Pjvtq9IYtvZkazEismvT/bf8WmyAsJpunoiUbczA22YZjJOm8PIYWpgOK5+PaW1YI4So+Ffu8OtrsK4FGqJ6bZBbRdkXrSfvZdMoZUJSfw== david@server1\n"
+    region:     "" => "RegionOne"
+[0m
+[0m[32m+ openstack_compute_secgroup_v2.bastion
+[0m    description:        "" => "Bastion Security groups"
+    name:               "" => "bastion-dave"
+    region:             "" => "RegionOne"
+    rule.#:             "" => "2"
+    rule.0.cidr:        "" => "0.0.0.0/0"
+    rule.0.from_port:   "" => "22"
+    rule.0.id:          "" => "<computed>"
+    rule.0.ip_protocol: "" => "tcp"
+    rule.0.to_port:     "" => "22"
+    rule.1.cidr:        "" => "0.0.0.0/0"
+    rule.1.from_port:   "" => "-1"
+    rule.1.id:          "" => "<computed>"
+    rule.1.ip_protocol: "" => "icmp"
+    rule.1.to_port:     "" => "-1"
+[0m
+[0m[32m+ openstack_compute_secgroup_v2.cf
+[0m    description:        "" => "Cloud Foundry Security groups"
+    name:               "" => "cf"
+    region:             "" => "RegionOne"
+    rule.#:             "" => "9"
+    rule.0.cidr:        "" => "0.0.0.0/0"
+    rule.0.from_port:   "" => "22"
+    rule.0.id:          "" => "<computed>"
+    rule.0.ip_protocol: "" => "tcp"
+    rule.0.to_port:     "" => "22"
+    rule.1.cidr:        "" => "0.0.0.0/0"
+    rule.1.from_port:   "" => "80"
+    rule.1.id:          "" => "<computed>"
+    rule.1.ip_protocol: "" => "tcp"
+    rule.1.to_port:     "" => "80"
+    rule.2.cidr:        "" => "0.0.0.0/0"
+    rule.2.from_port:   "" => "443"
+    rule.2.id:          "" => "<computed>"
+    rule.2.ip_protocol: "" => "tcp"
+    rule.2.to_port:     "" => "443"
+    rule.3.cidr:        "" => "0.0.0.0/0"
+    rule.3.from_port:   "" => "4443"
+    rule.3.id:          "" => "<computed>"
+    rule.3.ip_protocol: "" => "tcp"
+    rule.3.to_port:     "" => "4443"
+    rule.4.cidr:        "" => "0.0.0.0/0"
+    rule.4.from_port:   "" => "4222"
+    rule.4.id:          "" => "<computed>"
+    rule.4.ip_protocol: "" => "tcp"
+    rule.4.to_port:     "" => "25777"
+    rule.5.cidr:        "" => "0.0.0.0/0"
+    rule.5.from_port:   "" => "-1"
+    rule.5.id:          "" => "<computed>"
+    rule.5.ip_protocol: "" => "icmp"
+    rule.5.to_port:     "" => "-1"
+    rule.6.from_port:   "" => "-1"
+    rule.6.id:          "" => "<computed>"
+    rule.6.ip_protocol: "" => "icmp"
+    rule.6.self:        "" => "1"
+    rule.6.to_port:     "" => "-1"
+    rule.7.from_port:   "" => "1"
+    rule.7.id:          "" => "<computed>"
+    rule.7.ip_protocol: "" => "tcp"
+    rule.7.self:        "" => "1"
+    rule.7.to_port:     "" => "65535"
+    rule.8.from_port:   "" => "1"
+    rule.8.id:          "" => "<computed>"
+    rule.8.ip_protocol: "" => "udp"
+    rule.8.self:        "" => "1"
+    rule.8.to_port:     "" => "65535"
+[0m
+[0m[32m+ openstack_networking_floatingip_v2.bastion_fp
+[0m    address: "" => "<computed>"
+    pool:    "" => "net04_ext"
+    region:  "" => "RegionOne"
+[0m
+[0m[32m+ openstack_networking_floatingip_v2.cf_fp
+[0m    address: "" => "<computed>"
+    pool:    "" => "net04_ext"
+    region:  "" => "RegionOne"
+[0m
+[0m[32m+ openstack_networking_network_v2.internal_net
+[0m    admin_state_up: "" => "true"
+    name:           "" => "internal-net"
+    region:         "" => "RegionOne"
+    tenant_id:      "" => "dave"
+[0m
+[0m[32m+ openstack_networking_router_interface_v2.int-ext-interface
+[0m    region:    "" => "RegionOne"
+    router_id: "" => "${openstack_networking_router_v2.router.id}"
+    subnet_id: "" => "${openstack_networking_subnet_v2.cf_subnet.id}"
+[0m
+[0m[32m+ openstack_networking_router_v2.router
+[0m    admin_state_up:   "" => "true"
+    external_gateway: "" => "a305389a-9574-47ad-8b93-c7734abd6f17"
+    name:             "" => "router"
+    region:           "" => "RegionOne"
+    tenant_id:        "" => "dave"
+[0m
+[0m[32m+ openstack_networking_subnet_v2.cf_subnet
+[0m    cidr:                       "" => "192.168.2.0/24"
+    dns_nameservers.#:          "" => "2"
+    dns_nameservers.3811298194: "" => "8.8.4.4"
+    dns_nameservers.3817307869: "" => "8.8.8.8"
+    enable_dhcp:                "" => "true"
+    ip_version:                 "" => "4"
+    name:                       "" => "cf-subnet"
+    network_id:                 "" => "${openstack_networking_network_v2.internal_net.id}"
+    region:                     "" => "RegionOne"
+    tenant_id:                  "" => "dave"
+[0m
+[0m
