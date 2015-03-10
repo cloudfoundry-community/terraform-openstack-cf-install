@@ -86,7 +86,7 @@ Cleanup / Tear down
 
 Terraform does not yet quite cleanup after itself. You can run `make destroy` to get quite a few of the resources you created, but you will probably have to manually track down some of the bits and manually remove them. Once you have done so, run `make clean` to remove the local cache and status files, allowing you to run everything again without errors.
 
-Specifically, you may have to manually remove volumes, images (BOSH-*), security groups, key pairs, and floating IPs. 
+Specifically, you may have to manually remove volumes, images (BOSH-*), security groups, key pairs, and floating IPs.
 
 Module Outputs
 --------------
