@@ -23,6 +23,10 @@ resource "openstack_networking_subnet_v2" "cf_subnet" {
   dns_nameservers = ["8.8.4.4","8.8.8.8"]
 }
 
+output "internal_network" {
+  value = "${openstack_networking_subnet_v2.cf_subnet.id}
+}
+
 resource "openstack_networking_router_v2" "router" {
   name = "router"
   region = "${var.region}"
