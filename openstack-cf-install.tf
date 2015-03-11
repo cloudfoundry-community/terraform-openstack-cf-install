@@ -24,7 +24,7 @@ resource "openstack_networking_subnet_v2" "cf_subnet" {
 }
 
 output "internal_network" {
-  value = "${openstack_networking_subnet_v2.cf_subnet.id}
+  value = "${openstack_networking_subnet_v2.cf_subnet.id}"
 }
 
 resource "openstack_networking_router_v2" "router" {
