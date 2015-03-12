@@ -11,7 +11,7 @@ variable "region" {
   default = "RegionOne"
 }
 variable "network" {
-	default = "10.10"
+	default = "192.168"
 }
 variable "cf_admin_pass" {
   default = "c1oudc0wc1oudc0w"
@@ -22,7 +22,7 @@ variable "cf_domain" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.0.0"
+  default = "v1.1.0"
 }
 
 variable "cf_size" {
