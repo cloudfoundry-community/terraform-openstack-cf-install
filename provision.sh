@@ -97,20 +97,20 @@ fi
 
 
 # This is some hackwork to get the configs right. Could be changed in the future
-/bin/sed -i "s/CF_SUBNET1/${CF_SUBNET1}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s|OS_AUTHURL|${OS_AUTH_URL}|g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/OS_TENANT/${OS_TENANT}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/OS_APIKEY/${OS_API_KEY}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/OS_USERNAME/${OS_USERNAME}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/OS_TENANT/${OS_TENANT}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/CF_ELASTIC_IP/${CF_IP}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/CF_DOMAIN/${CF_DOMAIN}/g" deployments/cf-os-tiny.yml
-/bin/sed -i "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" deployments/cf-os-tiny.yml
+/bin/sed -i "s/CF_SUBNET1/${CF_SUBNET1}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s|OS_AUTHURL|${OS_AUTH_URL}|g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/OS_TENANT/${OS_TENANT}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/OS_APIKEY/${OS_API_KEY}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/OS_USERNAME/${OS_USERNAME}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/OS_TENANT/${OS_TENANT}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/CF_ELASTIC_IP/${CF_IP}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/CF_DOMAIN/${CF_DOMAIN}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" deployments/cf-openstack-tiny.yml
 
 
 # Upload the bosh release, set the deployment, and execute
-bosh upload release https://community-shared-boshreleases.s3.amazonaws.com/boshrelease-cf-196.tgz
-bosh deployment cf-os-${CF_SIZE}
+bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=202
+bosh deployment cf-openstack-${CF_SIZE}
 bosh prepare deployment
 
 # We locally commit the changes to the repo, so that errant git checkouts don't
