@@ -29,6 +29,8 @@ Deploy Cloud Foundry
 
 You must manually create a "Tenant" to use within Openstack, terraform is unable to do that for you. Note the name and ID of the tenant for use later.
 
+You must create a separate user just for this purpose, that does **not** have admin privileges. If the user does, you will be unable to create more than one CloudFoundry instance per Openstack install, even if you have them in separate tenants.
+
 Unlike the AWS version of this, you do not need to upload your SSH key before starting. Note the path to the pem/private key files that you want to use and we will put them in the config file further down.
 
 You **must** being using at least terraform version 0.3.7 with the openstack provider compiled and in the same directory as your terraform binary.
