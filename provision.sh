@@ -67,6 +67,7 @@ provider:
     openstack_region: ${OS_REGION}
   options:
     boot_from_volume: false
+  state_timeout: 600
 address:
   subnet_id: ${CF_SUBNET1}
   ip: ${IPMASK}.2.4
