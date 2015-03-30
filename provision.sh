@@ -17,22 +17,49 @@ CF_SIZE=${9}
 CF_BOSHWORKSPACE_VERSION=${10}
 CF_DOMAIN=${11}
 
-# Prepare the jumpbox to be able to install ruby and git-based bosh and cf repos
-cd $HOME
 
-sudo apt-get update
-sudo apt-get install -y git vim-nox unzip tree
+boshDirectorHost="${IPMASK}.2.4"
+cfReleaseVersion="205"
+
+# Prepare the jumpbox to be able to install ruby and git-based bosh and cf repos
+
+release=$(cat /etc/*release | tr -d '\n')
+case "${release}" in
+  (*Ubuntu*|*Debian*)
+    sudo apt-get update -yq
+    sudo apt-get install -yq aptitude
+    sudo aptitude -yq install build-essential vim-nox git unzip tree \
+      libxslt-dev libxslt1.1 libxslt1-dev libxml2 libxml2-dev \
+      libpq-dev libmysqlclient-dev libsqlite3-dev \
+      g++ gcc make libc6-dev libreadline6-dev zlib1g-dev libssl-dev libyaml-dev \
+      libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake \
+      libtool bison pkg-config libffi-dev
+    ;;
+  (*Centos*|*RedHat*|*Amazon*)
+    sudo yum update -y
+    sudo yum install -y epel-release
+    sudo yum install -y git unzip xz tree rsync openssl openssl-devel \
+    zlib zlib-devel libevent libevent-devel readline readline-devel cmake ntp \
+    htop wget tmux gcc g++ autoconf pcre pcre-devel vim-enhanced gcc mysql-devel \
+    postgresql-devel postgresql-libs sqlite-devel libxslt-devel libxml2-devel \
+    yajl-ruby
+    ;;
+esac
+
+cd $HOME
 
 # Generate the key that will be used to ssh between the bastion and the
 # microbosh machine
 ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
-# Install BOSH CLI, bosh-bootstrap, spiff and other helpful plugins/tools
 
-set +e # ignore the errors from the bad HTML errors from downloading
-curl -s https://raw.githubusercontent.com/cloudfoundry-community/traveling-bosh/master/scripts/installer | sudo bash
-set -e
-export PATH=$PATH:/usr/bin/traveling-bosh
+# Install RVM
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+curl -sSL https://get.rvm.io | bash -s stable
+~/.rvm/bin/rvm  --static install ruby-2.1.5
+~/.rvm/bin/rvm alias create default 2.1.5
+source ~/.rvm/environments/default
+
 
 # This volume is created using terraform in aws-bosh.tf
 #sudo /sbin/mkfs.ext4 /dev/xvdc
@@ -47,6 +74,11 @@ export PATH=$PATH:/usr/bin/traveling-bosh
 #sudo rsync -avq /tmp/ /home/ubuntu/workspace/tmp/
 #sudo rm -fR /tmp
 #sudo ln -s /home/ubuntu/workspace/tmp /tmp
+
+# Install BOSH CLI, bosh-bootstrap, spiff and other helpful plugins/tools
+gem install git -v 1.2.7  #1.2.9.1 is not backwards compatible
+gem install bosh_cli bosh_cli_plugin_micro bosh_cli_plugin_aws bosh-bootstrap \
+  bosh-workspace --no-ri --no-rdoc --quiet
 
 # bosh-bootstrap handles provisioning the microbosh machine and installing bosh
 # on it. This is very nice of bosh-bootstrap. Everyone make sure to thank bosh-bootstrap
@@ -70,13 +102,13 @@ provider:
   state_timeout: 600
 address:
   subnet_id: ${CF_SUBNET1}
-  ip: ${IPMASK}.2.4
+  ip: ${boshDirectorHost}
 EOF
 
 bosh bootstrap deploy
 
 # We've hardcoded the IP of the microbosh machine, because convenience
-bosh -n target https://${IPMASK}.2.4:25555
+bosh -n target https://${boshDirectorHost}:25555
 bosh login admin admin
 popd
 
@@ -87,6 +119,8 @@ git clone --branch  ${CF_BOSHWORKSPACE_VERSION} http://github.com/cloudfoundry-c
 pushd cf-boshworkspace
 mkdir -p ssh
 
+bundle install
+
 # Pull out the UUID of the director - bosh_cli needs it in the deployment to
 # know it's hitting the right microbosh instance
 DIRECTOR_UUID=$(bosh status | grep UUID | awk '{print $2}')
@@ -96,6 +130,10 @@ if [ $CF_DOMAIN == "XIP" ]; then
   CF_DOMAIN="${CF_IP}.xip.io"
 fi
 
+curl -sOL https://github.com/cloudfoundry-incubator/spiff/releases/download/v1.0.3/spiff_linux_amd64.zip
+unzip spiff_linux_amd64.zip
+sudo mv ./spiff /usr/local/bin/spiff
+rm spiff_linux_amd64.zip
 
 # This is some hackwork to get the configs right. Could be changed in the future
 /bin/sed -i "s/CF_SUBNET1/${CF_SUBNET1}/g" deployments/cf-openstack-tiny.yml
@@ -110,7 +148,7 @@ fi
 
 
 # Upload the bosh release, set the deployment, and execute
-bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=202
+bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${cfReleaseVersion}
 bosh deployment cf-openstack-${CF_SIZE}
 bosh prepare deployment
 
