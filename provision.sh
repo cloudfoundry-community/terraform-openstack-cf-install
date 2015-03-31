@@ -77,8 +77,10 @@ source ~/.rvm/environments/default
 
 # Install BOSH CLI, bosh-bootstrap, spiff and other helpful plugins/tools
 gem install git -v 1.2.7  #1.2.9.1 is not backwards compatible
-gem install bosh_cli bosh_cli_plugin_micro bosh_cli_plugin_aws bosh-bootstrap \
-  bosh-workspace --no-ri --no-rdoc --quiet
+gem install bosh_cli -v 1.2891.0 --no-ri --no-rdoc --quiet
+gem install bosh_cli_plugin_micro -v 1.2891.0 --no-ri --no-rdoc --quiet
+gem install bosh_cli_plugin_aws -v 1.2891.0 --no-ri --no-rdoc --quiet
+gem install bosh-bootstrap bosh-workspace --no-ri --no-rdoc --quiet
 
 # bosh-bootstrap handles provisioning the microbosh machine and installing bosh
 # on it. This is very nice of bosh-bootstrap. Everyone make sure to thank bosh-bootstrap
