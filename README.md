@@ -33,14 +33,14 @@ You must create a separate user just for this purpose, that does **not** have ad
 
 Unlike the AWS version of this, you do not need to upload your SSH key before starting. Note the path to the pem/private key files that you want to use and we will put them in the config file further down.
 
-You **must** being using at least terraform version 0.3.7 with the openstack provider compiled and in the same directory as your terraform binary.
+You **must** being using at least terraform version 0.4.0 with the openstack provider compiled and in the same directory as your terraform binary.
 
 ```
 $ terraform -v
-Terraform v0.3.7
+Terraform v0.4.0
 ```
 
-You can install terraform 0.3.7+ via [https://www.terraform.io/downloads.html]
+You can install terraform 0.4.0+ via [https://www.terraform.io/downloads.html]
 
 Your chosen region must have sufficient quota to spin up **all** of the machines. While building various bits, the install process can use up to 13 VMs, settling down to use 7 machines long-term (more, if you want more runners).
 
@@ -115,3 +115,16 @@ floating_ip_pool # Name of the subnet to use for floating/external IPs, e.g. "ne
 network_external_id # UUID of the external network to use
 region # Which region to use
 ```
+
+Installing Sample Docker Services
+---------------------------------
+
+If you would like sample services like PostgreSQL, MySQL, Rabbit MQ, Mongo, etcd, consul (and others) there is a github repo that you can clone on the Bastion server or there is a flag you can set in your `terraform.tfvars` for this project which will install these services after Cloud Foundry is installed.
+
+To enable these services to be installed automatically, add the following line to `terraform.tfvars`:
+
+```
+install_docker_services = "true"
+```
+
+There is already a subnet defined in `openstack-cf-install.tf` where this server will be created.

@@ -3,7 +3,7 @@
 # fail immediately on error
 set -e
 
-# Variables passed in from terraform, see aws-vpc.tf, the "remote-exec" provisioner
+# Variables passed in from terraform, see openstack-cf-install.tf, the "remote-exec" provisioner
 
 OS_USERNAME=${1}
 OS_API_KEY=${2}
@@ -16,6 +16,8 @@ CF_IP=${8}
 CF_SIZE=${9}
 CF_BOSHWORKSPACE_VERSION=${10}
 CF_DOMAIN=${11}
+DOCKER_SUBNET=${12}
+INSTALL_DOCKER=${13}
 
 
 boshDirectorHost="${IPMASK}.2.4"
@@ -138,15 +140,17 @@ sudo mv ./spiff /usr/local/bin/spiff
 rm spiff_linux_amd64.zip
 
 # This is some hackwork to get the configs right. Could be changed in the future
-/bin/sed -i "s/CF_SUBNET1/${CF_SUBNET1}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s|OS_AUTHURL|${OS_AUTH_URL}|g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/OS_TENANT/${OS_TENANT}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/OS_APIKEY/${OS_API_KEY}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/OS_USERNAME/${OS_USERNAME}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/OS_TENANT/${OS_TENANT}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/CF_ELASTIC_IP/${CF_IP}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/CF_DOMAIN/${CF_DOMAIN}/g" deployments/cf-openstack-tiny.yml
-/bin/sed -i "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" deployments/cf-openstack-tiny.yml
+/bin/sed -i \
+  -e "s/CF_SUBNET1/${CF_SUBNET1}/g" \
+  -e "s|OS_AUTHURL|${OS_AUTH_URL}|g" \
+  -e "s/OS_TENANT/${OS_TENANT}/g" \
+  -e "s/OS_APIKEY/${OS_API_KEY}/g" \
+  -e "s/OS_USERNAME/${OS_USERNAME}/g" \
+  -e "s/OS_TENANT/${OS_TENANT}/g" \
+  -e "s/CF_ELASTIC_IP/${CF_IP}/g" \
+  -e "s/CF_DOMAIN/${CF_DOMAIN}/g" \
+  -e "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" \
+  deployments/cf-openstack-${CF_SIZE}.yml
 
 
 # Upload the bosh release, set the deployment, and execute
@@ -160,9 +164,37 @@ bosh prepare deployment
 
 # Speaking of hack-work, bosh deploy often fails the first or even second time, due to packet bats
 # We run it three times (it's idempotent) so that you don't have to
-bosh -n deploy
-bosh -n deploy
-bosh -n deploy
+for i in {0..2}
+do bosh -n deploy
+done
+
+
+echo "Install Traveling CF"
+curl -s https://raw.githubusercontent.com/cloudfoundry-community/traveling-cf-admin/master/scripts/installer | bash
+echo 'export PATH=$PATH:$HOME/bin/traveling-cf-admin' >> ~/.bashrc
+
+# Now deploy docker services if requested
+if [[ $INSTALL_DOCKER == "true" ]]; then
+
+  cd ~/workspace/deployments
+  git clone https://github.com/cloudfoundry-community/docker-services-boshworkspace.git
+
+  echo "Update the docker-aws-vpc.yml with cf-boshworkspace parameters"
+  /home/ubuntu/workspace/deployments/docker-services-boshworkspace/shell/populate-docker-openstack
+  dockerDeploymentManifest="/home/ubuntu/workspace/deployments/docker-services-boshworkspace/deployments/docker-openstack.yml"
+  /bin/sed -i "s/SUBNET_ID/${DOCKER_SUBNET}/g" "${dockerDeploymentManifest}"
+
+  cd ~/workspace/deployments/docker-services-boshworkspace
+  bundle install
+  bosh deployment docker-openstack
+  bosh prepare deployment
+
+  # Keep trying until there is a successful BOSH deploy.
+  for i in {0..2}
+  do bosh -n deploy
+  done
+
+fi
 
 # FIXME: enable this again when smoke_tests work
 # bosh run errand smoke_tests

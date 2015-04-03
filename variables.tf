@@ -17,6 +17,10 @@ variable "cf_admin_pass" {
   default = "c1oudc0wc1oudc0w"
 }
 
+variable "install_docker_services" {
+  default = "false"
+}
+
 variable "cf_domain" {
   default = "XIP"
 }

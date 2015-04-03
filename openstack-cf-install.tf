@@ -12,6 +12,13 @@ resource "openstack_networking_network_v2" "internal_net" {
   tenant_id = "${var.tenant_id}"
 }
 
+resource "openstack_networking_network_v2" "internal_net_docker_services" {
+  region = "${var.region}"
+  name = "internal-net-docker-services"
+  admin_state_up = "true"
+  tenant_id = "${var.tenant_id}"
+}
+
 resource "openstack_networking_subnet_v2" "cf_subnet" {
   name = "cf-subnet"
   region = "${var.region}"
@@ -22,6 +29,18 @@ resource "openstack_networking_subnet_v2" "cf_subnet" {
   enable_dhcp = "true"
   dns_nameservers = ["8.8.4.4","8.8.8.8"]
 }
+
+resource "openstack_networking_subnet_v2" "docker_services_subnet" {
+  name = "docker-services-subnet"
+  region = "${var.region}"
+  network_id = "${openstack_networking_network_v2.internal_net_docker_services.id}"
+  cidr = "${var.network}.5.0/24"
+  ip_version = 4
+  tenant_id = "${var.tenant_id}"
+  enable_dhcp = "true"
+  dns_nameservers = ["8.8.4.4","8.8.8.8"]
+}
+
 
 output "internal_network" {
   value = "${openstack_networking_subnet_v2.cf_subnet.id}"
@@ -41,6 +60,14 @@ resource "openstack_networking_router_interface_v2" "int-ext-interface" {
   subnet_id = "${openstack_networking_subnet_v2.cf_subnet.id}"
 
 }
+
+resource "openstack_networking_router_interface_v2" "int-ext-docker-services-interface" {
+  region = "${var.region}"
+  router_id = "${openstack_networking_router_v2.router.id}"
+  subnet_id = "${openstack_networking_subnet_v2.docker_services_subnet.id}"
+
+}
+
 resource "openstack_compute_keypair_v2" "keypair" {
   name = "bastion-keypair-${var.tenant_name}"
   public_key = "${file(var.public_key_path)}"
@@ -177,7 +204,7 @@ resource "openstack_compute_instance_v2" "bastion" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /home/ubuntu/provision.sh",
-        "/home/ubuntu/provision.sh ${var.username} ${var.password} ${var.tenant_name} ${var.auth_url} ${var.region} ${openstack_networking_network_v2.internal_net.id} ${var.network} ${openstack_networking_floatingip_v2.cf_fp.address} ${var.cf_size} ${var.cf_boshworkspace_version} ${var.cf_domain}",
+        "/home/ubuntu/provision.sh ${var.username} ${var.password} ${var.tenant_name} ${var.auth_url} ${var.region} ${openstack_networking_network_v2.internal_net.id} ${var.network} ${openstack_networking_floatingip_v2.cf_fp.address} ${var.cf_size} ${var.cf_boshworkspace_version} ${var.cf_domain} ${openstack_networking_network_v2.internal_net_docker_services.id} ${var.install_docker_services}",
     ]
   }
 
