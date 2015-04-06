@@ -54,6 +54,10 @@ resource "openstack_networking_router_v2" "router" {
   tenant_id = "${var.tenant_id}"
 }
 
+output "router_id" {
+  value = "${openstack_networking_router_v2.router.id}"
+}
+
 resource "openstack_networking_router_interface_v2" "int-ext-interface" {
   region = "${var.region}"
   router_id = "${openstack_networking_router_v2.router.id}"
@@ -163,6 +167,10 @@ resource "openstack_compute_secgroup_v2" "cf" {
     self = true
   }
 
+}
+
+output "cf_sg_id" {
+  value = "${openstack_compute_secgroup_v2.cf.id}"
 }
 
 resource "openstack_networking_floatingip_v2" "cf_fp" {
