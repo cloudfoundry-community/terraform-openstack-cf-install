@@ -92,7 +92,7 @@ pushd microbosh
 cat <<EOF > settings.yml
 ---
 bosh:
-  name: firstbosh
+  name: bosh-${OS_TENANT}
 provider:
   name: openstack
   credentials:
