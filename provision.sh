@@ -56,8 +56,14 @@ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 
 
 # Install RVM
-gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-curl -sSL https://get.rvm.io | bash -s stable
+# gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+# curl -sSL https://get.rvm.io | bash -s stable
+
+git clone git://github.com/rvm/rvm
+cd rvm
+./install
+cd $HOME
+
 ~/.rvm/bin/rvm  --static install ruby-2.1.5
 ~/.rvm/bin/rvm alias create default 2.1.5
 source ~/.rvm/environments/default
