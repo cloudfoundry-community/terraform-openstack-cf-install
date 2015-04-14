@@ -21,7 +21,7 @@ INSTALL_DOCKER=${13}
 
 
 boshDirectorHost="${IPMASK}.2.4"
-cfReleaseVersion="205"
+cfReleaseVersion="206"
 
 # Prepare the jumpbox to be able to install ruby and git-based bosh and cf repos
 
@@ -35,7 +35,7 @@ case "${release}" in
       libpq-dev libmysqlclient-dev libsqlite3-dev \
       g++ gcc make libc6-dev libreadline6-dev zlib1g-dev libssl-dev libyaml-dev \
       libsqlite3-dev sqlite3 autoconf libgdbm-dev libncurses5-dev automake \
-      libtool bison pkg-config libffi-dev
+      libtool bison pkg-config libffi-dev cmake
     ;;
   (*Centos*|*RedHat*|*Amazon*)
     sudo yum update -y
@@ -64,8 +64,8 @@ cd rvm
 ./install
 cd $HOME
 
-~/.rvm/bin/rvm install ruby-2.1.5
-~/.rvm/bin/rvm alias create default 2.1.5
+~/.rvm/bin/rvm install ruby-2.1
+~/.rvm/bin/rvm alias create default 2.1
 source ~/.rvm/environments/default
 
 
@@ -84,11 +84,7 @@ source ~/.rvm/environments/default
 #sudo ln -s /home/ubuntu/workspace/tmp /tmp
 
 # Install BOSH CLI, bosh-bootstrap, spiff and other helpful plugins/tools
-gem install git -v 1.2.7  #1.2.9.1 is not backwards compatible
-gem install bosh_cli -v 1.2891.0 --no-ri --no-rdoc --quiet
-gem install bosh_cli_plugin_micro -v 1.2891.0 --no-ri --no-rdoc --quiet
-gem install bosh_cli_plugin_aws -v 1.2891.0 --no-ri --no-rdoc --quiet
-gem install bosh-bootstrap bosh-workspace --no-ri --no-rdoc --quiet
+gem install bosh-bootstrap bosh-workspace bundler --no-ri --no-rdoc --quiet
 
 # bosh-bootstrap handles provisioning the microbosh machine and installing bosh
 # on it. This is very nice of bosh-bootstrap. Everyone make sure to thank bosh-bootstrap
@@ -128,6 +124,8 @@ popd
 git clone --branch  ${CF_BOSHWORKSPACE_VERSION} http://github.com/cloudfoundry-community/cf-boshworkspace
 pushd cf-boshworkspace
 mkdir -p ssh
+
+rvm use 2.1@cf-boshworkspace --create
 
 bundle install
 
