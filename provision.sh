@@ -64,7 +64,7 @@ cd rvm
 ./install
 cd $HOME
 
-~/.rvm/bin/rvm  --static install ruby-2.1.5
+~/.rvm/bin/rvm install ruby-2.1.5
 ~/.rvm/bin/rvm alias create default 2.1.5
 source ~/.rvm/environments/default
 
