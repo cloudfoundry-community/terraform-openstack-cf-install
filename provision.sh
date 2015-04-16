@@ -64,9 +64,10 @@ cd rvm
 ./install
 cd $HOME
 
-~/.rvm/bin/rvm install ruby-2.1.5
-~/.rvm/bin/rvm alias create default 2.1.5
+~/.rvm/bin/rvm install ruby-2.1
+~/.rvm/bin/rvm alias create default 2.1
 source ~/.rvm/environments/default
+source ~/.rvm/scripts/rvm
 
 
 # This volume is created using terraform in aws-bosh.tf
@@ -84,11 +85,12 @@ source ~/.rvm/environments/default
 #sudo ln -s /home/ubuntu/workspace/tmp /tmp
 
 # Install BOSH CLI, bosh-bootstrap, spiff and other helpful plugins/tools
+gem install fog-aws -v 0.1.1 --no-ri --no-rdoc --quiet
 gem install git -v 1.2.7  #1.2.9.1 is not backwards compatible
 gem install bosh_cli -v 1.2891.0 --no-ri --no-rdoc --quiet
 gem install bosh_cli_plugin_micro -v 1.2891.0 --no-ri --no-rdoc --quiet
 gem install bosh_cli_plugin_aws -v 1.2891.0 --no-ri --no-rdoc --quiet
-gem install bosh-bootstrap bosh-workspace --no-ri --no-rdoc --quiet
+gem install bundler bosh-bootstrap bosh-workspace --no-ri --no-rdoc --quiet
 
 # bosh-bootstrap handles provisioning the microbosh machine and installing bosh
 # on it. This is very nice of bosh-bootstrap. Everyone make sure to thank bosh-bootstrap
