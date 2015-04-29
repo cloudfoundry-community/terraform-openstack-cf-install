@@ -5,3 +5,5 @@
 crash.log
 .terraform/
 terraform-provider-openstack
+provision/provision.sh
+.DS_Store

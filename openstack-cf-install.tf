@@ -198,24 +198,6 @@ resource "openstack_compute_instance_v2" "bastion" {
     uuid = "${openstack_networking_network_v2.internal_net.id}"
   }
 
-  connection {
-    user = "ubuntu"
-    key_file = "${var.key_path}"
-    host = "${openstack_networking_floatingip_v2.bastion_fp.address}"
-  }
-
-  provisioner "file" {
-    source = "${path.module}/provision.sh"
-    destination = "/home/ubuntu/provision.sh"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-        "chmod +x /home/ubuntu/provision.sh",
-        "/home/ubuntu/provision.sh ${var.username} ${var.password} ${var.tenant_name} ${var.auth_url} ${var.region} ${openstack_networking_network_v2.internal_net.id} ${var.network} ${openstack_networking_floatingip_v2.cf_fp.address} ${var.cf_size} ${var.cf_boshworkspace_version} ${var.cf_domain} ${openstack_networking_network_v2.internal_net_docker_services.id} ${var.install_docker_services}",
-    ]
-  }
-
 }
 
 output "cf_api" {
@@ -224,4 +206,48 @@ output "cf_api" {
 
 output "bastion_ip" {
   value = "${openstack_compute_instance_v2.bastion.floating_ip}"
+}
+
+output "username" {
+  value = "${var.username}"
+}
+output "password" {
+  value = "${var.password}"
+}
+output "tenant_name" {
+  value = "${var.tenant_name}"
+}
+output "auth_url" {
+  value = "${var.auth_url}"
+}
+output "region" {
+  value = "${var.region}"
+}
+output "internal_network_id" {
+  value = "${openstack_networking_network_v2.internal_net.id}"
+}
+output "network" {
+  value = "${var.network}"
+}
+output "cf_fp_address" {
+  value = "${openstack_networking_floatingip_v2.cf_fp.address}"
+}
+output "cf_size" {
+  value = "${var.cf_size}"
+}
+output "cf_boshworkspace_version" {
+  value = "${var.cf_boshworkspace_version}"
+}
+output "cf_domain" {
+  value = "${var.cf_domain}"
+}
+output "docker_subnet" {
+  value = "${openstack_networking_network_v2.internal_net_docker_services.id}"
+}
+output "install_docker_services" {
+  value = "${var.install_docker_services}"
+}
+
+output "key_path" {
+  value = "${var.key_path}"
 }
