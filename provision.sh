@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # fail immediately on error
-# set -e
+set -e -x
 
 # echo "$0 $*" > ~/provision.log
 
@@ -181,12 +181,14 @@ deployedVersion=$(bosh releases | grep " ${cfReleaseVersion}" | awk '{print $4}'
 deployedVersion="${deployedVersion//[^[:alnum:]]/}"
 if [[ ! "$deployedVersion" == "${cfReleaseVersion}" ]]; then
   bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${cfReleaseVersion}
-  bosh deployment cf-aws-${CF_SIZE}
+  bosh deployment cf-openstack-${CF_SIZE}
   bosh prepare deployment || bosh prepare deployment  #Seems to always fail on the first run...
+else
+  bosh deployment cf-openstack-${CF_SIZE}
 fi
 
 # Work around until bosh-workspace can handle submodules
-if [[ "cf-aws-${CF_SIZE}" == "cf-aws-large" ]]; then
+if [[ "cf-openstack-${CF_SIZE}" == "cf-openstack-large" ]]; then
   pushd .releases/cf
   ./update
   popd
@@ -212,7 +214,9 @@ fi
 if [[ $INSTALL_DOCKER == "true" ]]; then
 
   cd ~/workspace/deployments
-  git clone https://github.com/cloudfoundry-community/docker-services-boshworkspace.git
+  if [[ ! -d "$HOME/workspace/deployments/docker-services-boshworkspace" ]]; then
+    git clone https://github.com/cloudfoundry-community/docker-services-boshworkspace.git
+  fi
 
   echo "Update the docker-aws-vpc.yml with cf-boshworkspace parameters"
   /home/ubuntu/workspace/deployments/docker-services-boshworkspace/shell/populate-docker-openstack
