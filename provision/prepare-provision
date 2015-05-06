@@ -2,7 +2,7 @@
 
 # USAGE: provision/prepare-provision
 
-state_file="${STATE_FILE:-'./terraform.tfstate'}"
+state_file="${STATE_FILE:-./terraform.tfstate}"
 
 fail() {
   echo "$*" >&2
