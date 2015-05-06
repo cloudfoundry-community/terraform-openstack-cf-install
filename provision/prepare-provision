@@ -2,6 +2,8 @@
 
 # USAGE: provision/prepare-provision
 
+state_file="${STATE_FILE:-'./terraform.tfstate'}"
+
 fail() {
   echo "$*" >&2
   exit 1
@@ -32,16 +34,16 @@ assure_string_in_file() {
 }
 
 filename_provision="provision/provision.sh"
-assure_string_in_file $filename_provision 'OS_USERNAME=${1}' "OS_USERNAME=\"$(terraform output username)\""
-assure_string_in_file $filename_provision 'OS_API_KEY=${2}' "OS_API_KEY=\"$(terraform output password)\""
-assure_string_in_file $filename_provision 'OS_TENANT=${3}' "OS_TENANT=\"$(terraform output tenant_name)\""
-assure_string_in_file $filename_provision 'OS_AUTH_URL=${4}' "OS_AUTH_URL=\"$(terraform output auth_url)\""
-assure_string_in_file $filename_provision 'OS_REGION=${5}' "OS_REGION=\"$(terraform output region)\""
-assure_string_in_file $filename_provision 'CF_SUBNET1=${6}' "CF_SUBNET1=\"$(terraform output internal_network_id)\""
-assure_string_in_file $filename_provision 'IPMASK=${7}' "IPMASK=\"$(terraform output network)\""
-assure_string_in_file $filename_provision 'CF_IP=${8}' "CF_IP=\"$(terraform output cf_fp_address)\""
-assure_string_in_file $filename_provision 'CF_SIZE=${9}' "CF_SIZE=\"$(terraform output cf_size)\""
-assure_string_in_file $filename_provision 'CF_BOSHWORKSPACE_VERSION=${10}' "CF_BOSHWORKSPACE_VERSION=\"$(terraform output cf_boshworkspace_version)\""
-assure_string_in_file $filename_provision 'CF_DOMAIN=${11}' "CF_DOMAIN=\"$(terraform output cf_domain)\""
-assure_string_in_file $filename_provision 'DOCKER_SUBNET=${12}' "DOCKER_SUBNET=\"$(terraform output docker_subnet)\""
-assure_string_in_file $filename_provision 'INSTALL_DOCKER=${13}' "INSTALL_DOCKER=\"$(terraform output install_docker_services)\""
+assure_string_in_file $filename_provision 'OS_USERNAME=${1}' "OS_USERNAME=\"$(terraform output -state="${state_file}" username)\""
+assure_string_in_file $filename_provision 'OS_API_KEY=${2}' "OS_API_KEY=\"$(terraform output -state="${state_file}" password)\""
+assure_string_in_file $filename_provision 'OS_TENANT=${3}' "OS_TENANT=\"$(terraform output -state="${state_file}" tenant_name)\""
+assure_string_in_file $filename_provision 'OS_AUTH_URL=${4}' "OS_AUTH_URL=\"$(terraform output -state="${state_file}" auth_url)\""
+assure_string_in_file $filename_provision 'OS_REGION=${5}' "OS_REGION=\"$(terraform output -state="${state_file}" region)\""
+assure_string_in_file $filename_provision 'CF_SUBNET1=${6}' "CF_SUBNET1=\"$(terraform output -state="${state_file}" internal_network_id)\""
+assure_string_in_file $filename_provision 'IPMASK=${7}' "IPMASK=\"$(terraform output -state="${state_file}" network)\""
+assure_string_in_file $filename_provision 'CF_IP=${8}' "CF_IP=\"$(terraform output -state="${state_file}" cf_fp_address)\""
+assure_string_in_file $filename_provision 'CF_SIZE=${9}' "CF_SIZE=\"$(terraform output -state="${state_file}" cf_size)\""
+assure_string_in_file $filename_provision 'CF_BOSHWORKSPACE_VERSION=${10}' "CF_BOSHWORKSPACE_VERSION=\"$(terraform output -state="${state_file}" cf_boshworkspace_version)\""
+assure_string_in_file $filename_provision 'CF_DOMAIN=${11}' "CF_DOMAIN=\"$(terraform output -state="${state_file}" cf_domain)\""
+assure_string_in_file $filename_provision 'DOCKER_SUBNET=${12}' "DOCKER_SUBNET=\"$(terraform output -state="${state_file}" docker_subnet)\""
+assure_string_in_file $filename_provision 'INSTALL_DOCKER=${13}' "INSTALL_DOCKER=\"$(terraform output -state="${state_file}" install_docker_services)\""
