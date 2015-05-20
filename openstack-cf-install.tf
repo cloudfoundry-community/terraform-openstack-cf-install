@@ -12,6 +12,13 @@ resource "openstack_networking_network_v2" "internal_net" {
   tenant_id = "${var.tenant_id}"
 }
 
+resource "openstack_networking_network_v2" "lb_net" {
+  region = "${var.region}"
+  name = "lb-net"
+  admin_state_up = "true"
+  tenant_id = "${var.tenant_id}"
+}
+
 resource "openstack_networking_network_v2" "internal_net_docker_services" {
   region = "${var.region}"
   name = "internal-net-docker-services"
@@ -24,6 +31,17 @@ resource "openstack_networking_subnet_v2" "cf_subnet" {
   region = "${var.region}"
   network_id = "${openstack_networking_network_v2.internal_net.id}"
   cidr = "${var.network}.2.0/24"
+  ip_version = 4
+  tenant_id = "${var.tenant_id}"
+  enable_dhcp = "true"
+  dns_nameservers = ["8.8.4.4","8.8.8.8"]
+}
+
+resource "openstack_networking_subnet_v2" "lb_subnet" {
+  name = "lb-subnet"
+  region = "${var.region}"
+  network_id = "${openstack_networking_network_v2.lb_net.id}"
+  cidr = "${var.network}.0.0/24"
   ip_version = 4
   tenant_id = "${var.tenant_id}"
   enable_dhcp = "true"
@@ -70,6 +88,12 @@ resource "openstack_networking_router_interface_v2" "int-ext-docker-services-int
   router_id = "${openstack_networking_router_v2.router.id}"
   subnet_id = "${openstack_networking_subnet_v2.docker_services_subnet.id}"
 
+}
+
+resource "openstack_networking_router_interface_v2" "int-ext-lb-interface" {
+  region = "${var.region}"
+  router_id = "${openstack_networking_router_v2.router.id}"
+  subnet_id = "${openstack_networking_subnet_v2.lb_subnet.id}"
 }
 
 resource "openstack_compute_keypair_v2" "keypair" {
@@ -169,6 +193,10 @@ resource "openstack_compute_secgroup_v2" "cf" {
 
 }
 
+output "cf_sg" {
+  value = "${openstack_compute_secgroup_v2.cf.name}"
+}
+
 output "cf_sg_id" {
   value = "${openstack_compute_secgroup_v2.cf.id}"
 }
@@ -247,7 +275,24 @@ output "docker_subnet" {
 output "install_docker_services" {
   value = "${var.install_docker_services}"
 }
+output "lb_subnet" {
+  value = "${openstack_networking_subnet_v2.lb_subnet.id}"
+}
+output "lb_net" {
+  value = "${openstack_networking_network_v2.lb_net.id}"
+}
 
 output "key_path" {
   value = "${var.key_path}"
 }
+
+output "backbone_z1_count" { value = "${lookup(var.backbone_z1_count, var.deployment_size)}" }
+output "api_z1_count"      { value = "${lookup(var.api_z1_count,      var.deployment_size)}" }
+output "services_z1_count" { value = "${lookup(var.services_z1_count, var.deployment_size)}" }
+output "health_z1_count"   { value = "${lookup(var.health_z1_count,   var.deployment_size)}" }
+output "runner_z1_count"   { value = "${lookup(var.runner_z1_count,   var.deployment_size)}" }
+output "backbone_z2_count" { value = "${lookup(var.backbone_z2_count, var.deployment_size)}" }
+output "api_z2_count"      { value = "${lookup(var.api_z2_count,      var.deployment_size)}" }
+output "services_z2_count" { value = "${lookup(var.services_z2_count, var.deployment_size)}" }
+output "health_z2_count"   { value = "${lookup(var.health_z2_count,   var.deployment_size)}" }
+output "runner_z2_count"   { value = "${lookup(var.runner_z2_count,   var.deployment_size)}" }
