@@ -26,7 +26,7 @@ variable "cf_domain" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.1.4"
+  default = "v1.1.5"
 }
 
 variable "cf_size" {
@@ -39,4 +39,90 @@ variable "image_name" {
 
 variable "flavor_name" {
   default = "m1.medium"
+}
+
+variable "deployment_size" {
+  default = "small"
+}
+
+variable backbone_z1_count {
+    default = {
+        small  = "1"
+        med    = "2"
+        med-ha = "1"
+        big-ha = "2"
+    }
+}
+variable api_z1_count {
+    default = {
+        small  = "1"
+        med    = "2"
+        med-ha = "1"
+        big-ha = "2"
+    }
+}
+variable services_z1_count {
+    default = {
+        small  = "1"
+        med    = "1"
+        med-ha = "1"
+        big-ha = "1"
+    }
+}
+variable health_z1_count {
+    default = {
+        small  = "1"
+        med    = "1"
+        med-ha = "1"
+        big-ha = "1"
+    }
+}
+variable runner_z1_count {
+    default = {
+        small  = "1"
+        med    = "2"
+        med-ha = "1"
+        big-ha = "3"
+    }
+}
+
+variable backbone_z2_count {
+    default = {
+        small  = "0"
+        med    = "0"
+        med-ha = "1"
+        big-ha = "2"
+    }
+}
+variable api_z2_count {
+    default = {
+        small  = "0"
+        med    = "0"
+        med-ha = "1"
+        big-ha = "2"
+    }
+}
+variable services_z2_count {
+    default = {
+        small  = "0"
+        med    = "0"
+        med-ha = "1"
+        big-ha = "2"
+    }
+}
+variable health_z2_count {
+    default = {
+        small  = "0"
+        med    = "0"
+        med-ha = "1"
+        big-ha = "1"
+    }
+}
+variable runner_z2_count {
+    default = {
+        small  = "0"
+        med    = "0"
+        med-ha = "1"
+        big-ha = "3"
+    }
 }
