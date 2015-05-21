@@ -45,6 +45,10 @@ variable "deployment_size" {
   default = "small"
 }
 
+variable "cf_release_version" {
+  default = "207"
+}
+
 variable backbone_z1_count {
     default = {
         small  = "1"

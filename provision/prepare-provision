@@ -49,6 +49,7 @@ assure_string_in_file $filename_provision 'CF_DOMAIN=${11}' "CF_DOMAIN=\"$(terra
 assure_string_in_file $filename_provision 'DOCKER_SUBNET=${12}' "DOCKER_SUBNET=\"$(terraform output -state="${state_file}" docker_subnet)\""
 assure_string_in_file $filename_provision 'INSTALL_DOCKER=${13}' "INSTALL_DOCKER=\"$(terraform output -state="${state_file}" install_docker_services)\""
 assure_string_in_file $filename_provision 'LB_SUBNET1=${14}' "LB_SUBNET1=\"$(terraform output -state="${state_file}" lb_net)\""
+assure_string_in_file $filename_provision 'CF_RELEASE_VERSION=${16}' "CF_RELEASE_VERSION=\"$(terraform output -state="${state_file}" cf_release_version)\""
 
 for job in BACKBONE API SERVICES HEALTH RUNNER; do
 	for zone in Z1 Z2; do
