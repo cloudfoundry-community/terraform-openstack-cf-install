@@ -133,8 +133,8 @@ address:
   subnet_id: ${CF_SUBNET1}
   ip: ${boshDirectorHost}
 EOF
-
 }
+
 if [[ ! -f "$HOME/workspace/deployments/microbosh/settings.yml" ]]; then
   create_settings_yml
 fi
@@ -208,6 +208,7 @@ fi
   -e "s/CF_DOMAIN/${CF_DOMAIN}/g" \
   -e "s/CF_SG/${CF_SG}/g" \
   -e "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" \
+  -e "s/CF_RELEASE_VERSION/${CF_RELEASE_VERSION}/g" \
   -e "s/backbone_z1:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/backbone_z1:\1${BACKBONE_Z1_COUNT}\2/" \
   -e "s/api_z1:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/api_z1:\1${API_Z1_COUNT}\2/" \
   -e "s/services_z1:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/services_z1:\1${SERVICES_Z1_COUNT}\2/" \
