@@ -26,7 +26,7 @@ variable "cf_domain" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.1.5"
+  default = "v1.1.6"
 }
 
 variable "cf_size" {
@@ -43,6 +43,10 @@ variable "flavor_name" {
 
 variable "deployment_size" {
   default = "small"
+}
+
+variable "cf_release_version" {
+  default = "207"
 }
 
 variable backbone_z1_count {

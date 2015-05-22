@@ -26,6 +26,7 @@ DOCKER_SUBNET=${12}
 INSTALL_DOCKER=${13}
 LB_SUBNET1=${14}
 CF_SG=${15}
+CF_RELEASE_VERSION=${16}
 
 BACKBONE_Z1_COUNT=COUNT
 API_Z1_COUNT=COUNT
@@ -39,7 +40,6 @@ HEALTH_Z2_COUNT=COUNT
 RUNNER_Z2_COUNT=COUNT
 
 boshDirectorHost="${IPMASK}.2.4"
-cfReleaseVersion="207"
 
 cd $HOME
 (("$?" == "0")) ||
@@ -113,6 +113,7 @@ gem install bundler bosh-bootstrap --no-ri --no-rdoc --quiet
 mkdir -p {bin,workspace/deployments/microbosh,workspace/tools}
 pushd workspace/deployments
 pushd microbosh
+create_settings_yml() {
 cat <<EOF > settings.yml
 ---
 bosh:
@@ -132,10 +133,30 @@ address:
   subnet_id: ${CF_SUBNET1}
   ip: ${boshDirectorHost}
 EOF
+}
+
+if [[ ! -f "$HOME/workspace/deployments/microbosh/settings.yml" ]]; then
+  create_settings_yml
+fi
 
 if [[ ! -d "$HOME/workspace/deployments/microbosh/deployments" ]]; then
   bosh bootstrap deploy
 fi
+
+rebuild_micro_bosh_easy() {
+  echo "Retry deploying the micro bosh, attempting bosh bootstrap delete..."
+  bosh bootstrap delete || rebuild_micro_bosh_hard
+  bosh bootstrap deploy
+  bosh -n target https://${boshDirectorHost}:25555
+  bosh login admin admin
+}
+
+rebuild_micro_bosh_hard() {
+  echo "Retry deploying the micro bosh, attempting bosh bootstrap delete..."
+  rm -rf "$HOME/workspace/deployments/microbosh/deployments"
+  rm -rf "$HOME/workspace/deployments/microbosh/ssh"
+  create_settings_yml
+}
 
 # We've hardcoded the IP of the microbosh machine, because convenience
 bosh -n target https://${boshDirectorHost}:25555
@@ -187,6 +208,7 @@ fi
   -e "s/CF_DOMAIN/${CF_DOMAIN}/g" \
   -e "s/CF_SG/${CF_SG}/g" \
   -e "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" \
+  -e "s/CF_RELEASE_VERSION/${CF_RELEASE_VERSION}/g" \
   -e "s/backbone_z1:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/backbone_z1:\1${BACKBONE_Z1_COUNT}\2/" \
   -e "s/api_z1:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/api_z1:\1${API_Z1_COUNT}\2/" \
   -e "s/services_z1:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/services_z1:\1${SERVICES_Z1_COUNT}\2/" \
@@ -201,10 +223,10 @@ fi
 
 
 # Upload the bosh release, set the deployment, and execute
-deployedVersion=$(bosh releases | grep " ${cfReleaseVersion}" | awk '{print $4}')
+deployedVersion=$(bosh releases | grep " ${CF_RELEASE_VERSION}" | awk '{print $4}')
 deployedVersion="${deployedVersion//[^[:alnum:]]/}"
-if [[ ! "$deployedVersion" == "${cfReleaseVersion}" ]]; then
-  bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${cfReleaseVersion}
+if [[ ! "$deployedVersion" == "${CF_RELEASE_VERSION}" ]]; then
+  bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${CF_RELEASE_VERSION}
   bosh deployment cf-openstack-${CF_SIZE}
   bosh prepare deployment || bosh prepare deployment  #Seems to always fail on the first run...
 else
