@@ -221,8 +221,6 @@ fi
   -e "s/runner_z2:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/runner_z2:\1${RUNNER_Z2_COUNT}\2/" \
   deployments/cf-openstack-${CF_SIZE}.yml
 
-echo "Debug yml file..."
-cat deployments/cf-openstack-${CF_SIZE}.yml
 
 # Upload the bosh release, set the deployment, and execute
 deployedVersion=$(bosh releases | grep " ${CF_RELEASE_VERSION}" | awk '{print $4}')
