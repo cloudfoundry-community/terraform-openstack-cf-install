@@ -18,7 +18,7 @@ assure_string_in_file() {
   assuresearchString=$2
   assurereplaceString=$3
 
-  re="s#^.*$assuresearchString.*#$assurereplaceString#"
+  re="s#^\(.*\)$assuresearchString\(.*\)#\1$assurereplaceString\2#"
 
   #Detect OSX v other linux for sed ''
   if [[ "$(uname -s)" == "Darwin" ]]; then
@@ -32,6 +32,11 @@ assure_string_in_file() {
   fi
 
 }
+
+LOCALHOST_WHITELIST="127.0.0.1,localhost,local.home,0.0.0.0"
+LB_WHITELIST="$(terraform output -state="${state_file}" lb_subnet_cidr | sed 's|0/24$|{0..255}|')"
+CF_WHITELIST="$(terraform output -state="${state_file}" cf_subnet_cidr | sed 's|0/24$|{0..255}|')"
+DK_WHITELIST="$(terraform output -state="${state_file}" docker_subnet_cidr | sed 's|0/24$|{0..255}|')"
 
 filename_provision="provision/provision.sh"
 assure_string_in_file $filename_provision 'OS_USERNAME=${1}' "OS_USERNAME=\"$(terraform output -state="${state_file}" username)\""
@@ -48,8 +53,14 @@ assure_string_in_file $filename_provision 'CF_SG=${15}' "CF_SG=\"$(terraform out
 assure_string_in_file $filename_provision 'CF_DOMAIN=${11}' "CF_DOMAIN=\"$(terraform output -state="${state_file}" cf_domain)\""
 assure_string_in_file $filename_provision 'DOCKER_SUBNET=${12}' "DOCKER_SUBNET=\"$(terraform output -state="${state_file}" docker_subnet)\""
 assure_string_in_file $filename_provision 'INSTALL_DOCKER=${13}' "INSTALL_DOCKER=\"$(terraform output -state="${state_file}" install_docker_services)\""
-assure_string_in_file $filename_provision 'LB_SUBNET1=${14}' "LB_SUBNET1=\"$(terraform output -state="${state_file}" lb_net)\""
+assure_string_in_file $filename_provision 'HTTP_PROXY=${14}' "HTTP_PROXY=\"$(terraform output -state="${state_file}" http_proxy)\""
+assure_string_in_file $filename_provision 'HTTPS_PROXY=${15}' "HTTPS_PROXY=\"$(terraform output -state="${state_file}" https_proxy)\""
 assure_string_in_file $filename_provision 'CF_RELEASE_VERSION=${16}' "CF_RELEASE_VERSION=\"$(terraform output -state="${state_file}" cf_release_version)\""
+assure_string_in_file $filename_provision 'LOCALHOST_WHITELIST' "$LOCALHOST_WHITELIST"
+assure_string_in_file $filename_provision 'LB_WHITELIST_IPS' "$LB_WHITELIST"
+assure_string_in_file $filename_provision 'CF_WHITELIST_IPS' "$CF_WHITELIST"
+assure_string_in_file $filename_provision 'DK_WHITELIST_IPS' "$DK_WHITELIST"
+
 
 for job in BACKBONE API SERVICES HEALTH RUNNER; do
 	for zone in Z1 Z2; do

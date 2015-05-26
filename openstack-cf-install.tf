@@ -269,17 +269,26 @@ output "cf_boshworkspace_version" {
 output "cf_domain" {
   value = "${var.cf_domain}"
 }
+output "cf_subnet_cidr" {
+  value = "${openstack_networking_subnet_v2.cf_subnet.cidr}"
+}
 output "docker_subnet" {
   value = "${openstack_networking_network_v2.internal_net_docker_services.id}"
 }
 output "install_docker_services" {
   value = "${var.install_docker_services}"
 }
+output "docker_subnet_cidr" {
+  value = "${openstack_networking_subnet_v2.docker_services_subnet.cidr}"
+}
 output "lb_subnet" {
   value = "${openstack_networking_subnet_v2.lb_subnet.id}"
 }
 output "lb_net" {
   value = "${openstack_networking_network_v2.lb_net.id}"
+}
+output "lb_subnet_cidr" {
+  value = "${openstack_networking_subnet_v2.lb_subnet.cidr}"
 }
 
 output "key_path" {
@@ -288,6 +297,14 @@ output "key_path" {
 
 output "cf_release_version" {
 	value = "${var.cf_release_version}"
+}
+
+output "http_proxy" {
+  value = "${var.http_proxy}"
+}
+
+output "https_proxy" {
+  value = "${var.https_proxy}"
 }
 
 output "backbone_z1_count" { value = "${lookup(var.backbone_z1_count, var.deployment_size)}" }

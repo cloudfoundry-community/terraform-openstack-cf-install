@@ -24,6 +24,13 @@ CF_BOSHWORKSPACE_VERSION=${10}
 CF_DOMAIN=${11}
 DOCKER_SUBNET=${12}
 INSTALL_DOCKER=${13}
+HTTP_PROXY=${14}
+HTTPS_PROXY=${15}
+LB_WHITELIST="$(echo LB_WHITELIST_IPS | sed 's/ /,/g')"
+CF_WHITELIST="$(echo CF_WHITELIST_IPS | sed 's/ /,/g')"
+DK_WHITELIST="$(echo DK_WHITELIST_IPS | sed 's/ /,/g')"
+NO_PROXY="LOCALHOST_WHITELIST,$LB_WHITELIST,$CF_WHITELIST,$DK_WHITELIST"
+
 LB_SUBNET1=${14}
 CF_SG=${15}
 CF_RELEASE_VERSION=${16}
@@ -44,6 +51,25 @@ boshDirectorHost="${IPMASK}.2.4"
 cd $HOME
 (("$?" == "0")) ||
   fail "Could not find HOME folder, terminating install."
+
+
+# Setup proxy
+if [[ $HTTP_PROXY != "" || $HTTPS_PROXY != "" ]]; then
+  if [[ ! -f /etc/profile.d/http_proxy.sh ]]; then
+    cat <<EOF > http_proxy.sh
+#!/bin/bash
+export http_proxy=${HTTP_PROXY}
+export https_proxy=${HTTPS_PROXY}
+export no_proxy=${NO_PROXY}
+EOF
+  sudo cp http_proxy.sh /etc/profile.d/http_proxy.sh
+  source http_proxy.sh
+  echo "Acquire::http::proxy \"${HTTP_PROXY}\";" > 100proxy
+  echo "Acquire::https::proxy \"${HTTPS_PROXY}\";" >> 100proxy
+  sudo cp 100proxy /etc/apt/apt.conf.d/100proxy
+  fi
+fi
+
 
 # Generate the key that will be used to ssh between the bastion and the
 # microbosh machine
@@ -139,6 +165,15 @@ if [[ ! -f "$HOME/workspace/deployments/microbosh/settings.yml" ]]; then
   create_settings_yml
 fi
 
+if [[ $HTTP_PROXY != ""  || $HTTPS_PROXY != ""  ]]; then
+  cat <<EOF >> settings.yml
+proxy:
+  http_proxy: ${HTTP_PROXY}
+  https_proxy: ${HTTPS_PROXY}
+  no_proxy: ${NO_PROXY}
+EOF
+fi
+
 if [[ ! -d "$HOME/workspace/deployments/microbosh/deployments" ]]; then
   bosh bootstrap deploy
 fi
@@ -219,6 +254,9 @@ fi
   -e "s/services_z2:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/services_z2:\1${SERVICES_Z2_COUNT}\2/" \
   -e "s/health_z2:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/health_z2:\1${HEALTH_Z2_COUNT}\2/" \
   -e "s/runner_z2:\( \+\)[0-9\.]\+\(.*# MARKER_FOR_PROVISION.*\)/runner_z2:\1${RUNNER_Z2_COUNT}\2/" \
+  -e "s|~ # HTTP_PROXY|${HTTP_PROXY}|" \
+  -e "s|~ # HTTPS_PROXY|${HTTPS_PROXY}|" \
+  -e "s/~ # NO_PROXY/${NO_PROXY}/" \
   deployments/cf-openstack-${CF_SIZE}.yml
 
 
