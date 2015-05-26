@@ -271,12 +271,6 @@ else
   bosh deployment cf-openstack-${CF_SIZE}
 fi
 
-# Work around until bosh-workspace can handle submodules
-if [[ "cf-openstack-${CF_SIZE}" == "cf-openstack-large" ]]; then
-  pushd .releases/cf
-  ./update
-  popd
-fi
 
 # We locally commit the changes to the repo, so that errant git checkouts don't
 # cause havok
