@@ -10,11 +10,17 @@ variable "network_external_id" {}
 variable "region" {
   default = "RegionOne"
 }
+
 variable "network" {
 	default = "192.168"
 }
+
 variable "cf_admin_pass" {
   default = "c1oudc0wc1oudc0w"
+}
+
+variable "debug" {
+  default = "false"
 }
 
 variable "install_docker_services" {

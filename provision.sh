@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # fail immediately on error
-set -e -x
+set -e
 
 # echo "$0 $*" > ~/provision.log
 
@@ -35,6 +35,8 @@ CF_WHITELIST="$(echo CF_WHITELIST_IPS | sed 's/ /,/g')"
 DK_WHITELIST="$(echo DK_WHITELIST_IPS | sed 's/ /,/g')"
 NO_PROXY="LOCALHOST_WHITELIST,$LB_WHITELIST,$CF_WHITELIST,$DK_WHITELIST"
 
+DEBUG=${19}
+
 BACKBONE_Z1_COUNT=COUNT
 API_Z1_COUNT=COUNT
 SERVICES_Z1_COUNT=COUNT
@@ -47,6 +49,10 @@ HEALTH_Z2_COUNT=COUNT
 RUNNER_Z2_COUNT=COUNT
 
 boshDirectorHost="${IPMASK}.2.4"
+
+if [[ $DEBUG == "true" ]]; then
+  set -x
+fi
 
 cd $HOME
 (("$?" == "0")) ||
