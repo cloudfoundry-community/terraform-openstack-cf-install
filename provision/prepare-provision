@@ -61,6 +61,7 @@ assure_string_in_file $filename_provision 'LOCALHOST_WHITELIST' "$LOCALHOST_WHIT
 assure_string_in_file $filename_provision 'LB_WHITELIST_IPS' "$LB_WHITELIST"
 assure_string_in_file $filename_provision 'CF_WHITELIST_IPS' "$CF_WHITELIST"
 assure_string_in_file $filename_provision 'DK_WHITELIST_IPS' "$DK_WHITELIST"
+assure_string_in_file $filename_provision 'DEBUG=${19}' "DEBUG=\"$(terraform output -state="${state_file}" debug)\""
 
 
 for job in BACKBONE API SERVICES HEALTH RUNNER; do
