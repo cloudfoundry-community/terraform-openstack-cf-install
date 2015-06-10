@@ -143,3 +143,9 @@ variable runner_z2_count {
         big-ha = "3"
     }
 }
+variable "dns1" {
+  default = "8.8.4.4"
+}
+variable "dns2" {
+  default = "8.8.8.8"
+}

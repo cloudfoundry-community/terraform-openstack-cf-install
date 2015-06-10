@@ -34,7 +34,7 @@ resource "openstack_networking_subnet_v2" "cf_subnet" {
   ip_version = 4
   tenant_id = "${var.tenant_id}"
   enable_dhcp = "true"
-  dns_nameservers = ["8.8.4.4","8.8.8.8"]
+  dns_nameservers = ["${var.dns1}","${var.dns2}"]
 }
 
 resource "openstack_networking_subnet_v2" "lb_subnet" {
@@ -45,7 +45,7 @@ resource "openstack_networking_subnet_v2" "lb_subnet" {
   ip_version = 4
   tenant_id = "${var.tenant_id}"
   enable_dhcp = "true"
-  dns_nameservers = ["8.8.4.4","8.8.8.8"]
+  dns_nameservers = ["${var.dns1}","${var.dns2}"]
 }
 
 resource "openstack_networking_subnet_v2" "docker_services_subnet" {
@@ -56,7 +56,7 @@ resource "openstack_networking_subnet_v2" "docker_services_subnet" {
   ip_version = 4
   tenant_id = "${var.tenant_id}"
   enable_dhcp = "true"
-  dns_nameservers = ["8.8.4.4","8.8.8.8"]
+  dns_nameservers = ["${var.dns1}","${var.dns2}"]
 }
 
 
