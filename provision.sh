@@ -37,6 +37,8 @@ NO_PROXY="LOCALHOST_WHITELIST,$LB_WHITELIST,$CF_WHITELIST,$DK_WHITELIST"
 
 DEBUG=${19}
 
+PRIVATE_DOMAINS=${20}
+
 BACKBONE_Z1_COUNT=COUNT
 API_Z1_COUNT=COUNT
 SERVICES_Z1_COUNT=COUNT
@@ -229,6 +231,13 @@ if [ $CF_DOMAIN == "XIP" ]; then
   CF_DOMAIN="${CF_IP}.xip.io"
 fi
 
+echo "Install Traveling CF"
+if [[ "$(cat $HOME/.bashrc | grep 'export PATH=$PATH:$HOME/bin/traveling-cf-admin')" == "" ]]; then
+  curl -s https://raw.githubusercontent.com/cloudfoundry-community/traveling-cf-admin/master/scripts/installer | bash
+  echo 'export PATH=$PATH:$HOME/bin/traveling-cf-admin' >> $HOME/.bashrc
+  source $HOME/.bashrc
+fi
+
 if [[ ! -f "/usr/local/bin/spiff" ]]; then
   curl -sOL https://github.com/cloudfoundry-incubator/spiff/releases/download/v1.0.3/spiff_linux_amd64.zip
   unzip spiff_linux_amd64.zip
@@ -265,18 +274,20 @@ fi
   -e "s/~ # NO_PROXY/${NO_PROXY}/" \
   deployments/cf-openstack-${CF_SIZE}.yml
 
-
-# Upload the bosh release, set the deployment, and execute
-deployedVersion=$(bosh releases | grep " ${CF_RELEASE_VERSION}" | awk '{print $4}')
-deployedVersion="${deployedVersion//[^[:alnum:]]/}"
-if [[ ! "$deployedVersion" == "${CF_RELEASE_VERSION}" ]]; then
-  bosh upload release https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${CF_RELEASE_VERSION}
-  bosh deployment cf-openstack-${CF_SIZE}
-  bosh prepare deployment || bosh prepare deployment  #Seems to always fail on the first run...
+if [[ -n "$PRIVATE_DOMAINS" ]]; then
+  for domain in $(echo $PRIVATE_DOMAINS | tr "," "\n"); do
+    sed -i -e "s/^\(\s\+\)- PRIVATE_DOMAIN_PLACEHOLDER/\1- $domain\n\1- PRIVATE_DOMAIN_PLACEHOLDER/" deployments/cf-openstack-${CF_SIZE}.yml
+  done
+  sed -i -e "s/^\s\+- PRIVATE_DOMAIN_PLACEHOLDER//" deployments/cf-openstack-${CF_SIZE}.yml
 else
-  bosh deployment cf-openstack-${CF_SIZE}
+  sed -i -e "s/^\(\s\+\)internal_only_domains:\$/\1internal_only_domains: []/" deployments/cf-openstack-${CF_SIZE}.yml
+  sed -i -e "s/^\s\+- PRIVATE_DOMAIN_PLACEHOLDER//" deployments/cf-openstack-${CF_SIZE}.yml
 fi
 
+
+bosh upload release --skip-if-exists https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${CF_RELEASE_VERSION}
+bosh deployment cf-openstack-${CF_SIZE}
+bosh prepare deployment || bosh prepare deployment  #Seems to always fail on the first run...
 
 # We locally commit the changes to the repo, so that errant git checkouts don't
 # cause havok
@@ -302,13 +313,6 @@ done
 # Run smoke tests
 # FIXME: Re-enable smoke tests after they become reliable (experiencing intermittent failures)
 #bosh run errand smoke_tests_runner
-
-echo "Install Traveling CF"
-if [[ "$(cat $HOME/.bashrc | grep 'export PATH=$PATH:$HOME/bin/traveling-cf-admin')" == "" ]]; then
-  curl -s https://raw.githubusercontent.com/cloudfoundry-community/traveling-cf-admin/master/scripts/installer | bash
-  echo 'export PATH=$PATH:$HOME/bin/traveling-cf-admin' >> $HOME/.bashrc
-  source $HOME/.bashrc
-fi
 
 # Now deploy docker services if requested
 if [[ $INSTALL_DOCKER == "true" ]]; then

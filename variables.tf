@@ -143,3 +143,7 @@ variable runner_z2_count {
         big-ha = "3"
     }
 }
+
+variable private_cf_domains {
+    default = ""
+}
