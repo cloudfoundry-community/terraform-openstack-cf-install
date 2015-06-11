@@ -32,7 +32,7 @@ variable "cf_domain" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.1.10"
+  default = "v1.1.11"
 }
 
 variable "cf_size" {
@@ -142,4 +142,8 @@ variable runner_z2_count {
         med-ha = "1"
         big-ha = "3"
     }
+}
+
+variable private_cf_domains {
+    default = ""
 }
