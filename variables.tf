@@ -10,11 +10,17 @@ variable "network_external_id" {}
 variable "region" {
   default = "RegionOne"
 }
+
 variable "network" {
 	default = "192.168"
 }
+
 variable "cf_admin_pass" {
   default = "c1oudc0wc1oudc0w"
+}
+
+variable "debug" {
+  default = "false"
 }
 
 variable "install_docker_services" {
@@ -26,7 +32,7 @@ variable "cf_domain" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.1.9"
+  default = "v1.1.11"
 }
 
 variable "cf_size" {
@@ -137,9 +143,13 @@ variable runner_z2_count {
         big-ha = "3"
     }
 }
+
 variable "dns1" {
   default = "8.8.4.4"
 }
 variable "dns2" {
   default = "8.8.8.8"
+
+variable private_cf_domains {
+    default = ""
 }

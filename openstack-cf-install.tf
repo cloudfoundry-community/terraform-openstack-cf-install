@@ -239,54 +239,71 @@ output "bastion_ip" {
 output "username" {
   value = "${var.username}"
 }
+
 output "password" {
   value = "${var.password}"
 }
+
 output "tenant_name" {
   value = "${var.tenant_name}"
 }
+
 output "auth_url" {
   value = "${var.auth_url}"
 }
+
 output "region" {
   value = "${var.region}"
 }
+
 output "internal_network_id" {
   value = "${openstack_networking_network_v2.internal_net.id}"
 }
+
 output "network" {
   value = "${var.network}"
 }
+
 output "cf_fp_address" {
   value = "${openstack_networking_floatingip_v2.cf_fp.address}"
 }
+
 output "cf_size" {
   value = "${var.cf_size}"
 }
+
 output "cf_boshworkspace_version" {
   value = "${var.cf_boshworkspace_version}"
 }
+
 output "cf_domain" {
   value = "${var.cf_domain}"
 }
+
 output "cf_subnet_cidr" {
   value = "${openstack_networking_subnet_v2.cf_subnet.cidr}"
 }
+
 output "docker_subnet" {
   value = "${openstack_networking_network_v2.internal_net_docker_services.id}"
 }
+
 output "install_docker_services" {
   value = "${var.install_docker_services}"
 }
+
 output "docker_subnet_cidr" {
   value = "${openstack_networking_subnet_v2.docker_services_subnet.cidr}"
 }
+
 output "lb_subnet" {
   value = "${openstack_networking_subnet_v2.lb_subnet.id}"
 }
+
 output "lb_net" {
   value = "${openstack_networking_network_v2.lb_net.id}"
 }
+
 output "lb_subnet_cidr" {
   value = "${openstack_networking_subnet_v2.lb_subnet.cidr}"
 }
@@ -307,6 +324,10 @@ output "https_proxy" {
   value = "${var.https_proxy}"
 }
 
+output "debug" {
+  value = "${var.debug}"
+}
+
 output "backbone_z1_count" { value = "${lookup(var.backbone_z1_count, var.deployment_size)}" }
 output "api_z1_count"      { value = "${lookup(var.api_z1_count,      var.deployment_size)}" }
 output "services_z1_count" { value = "${lookup(var.services_z1_count, var.deployment_size)}" }
@@ -317,3 +338,7 @@ output "api_z2_count"      { value = "${lookup(var.api_z2_count,      var.deploy
 output "services_z2_count" { value = "${lookup(var.services_z2_count, var.deployment_size)}" }
 output "health_z2_count"   { value = "${lookup(var.health_z2_count,   var.deployment_size)}" }
 output "runner_z2_count"   { value = "${lookup(var.runner_z2_count,   var.deployment_size)}" }
+
+output "private_cf_domains" {
+  value = "${var.private_cf_domains}"
+}
