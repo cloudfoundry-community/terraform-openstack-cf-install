@@ -147,8 +147,10 @@ variable runner_z2_count {
 variable "dns1" {
   default = "8.8.4.4"
 }
+
 variable "dns2" {
   default = "8.8.8.8"
+}
 
 variable private_cf_domains {
     default = ""
