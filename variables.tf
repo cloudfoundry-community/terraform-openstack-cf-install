@@ -147,3 +147,7 @@ variable runner_z2_count {
 variable private_cf_domains {
     default = ""
 }
+
+variable install_logsearch {
+    default = "false"
+}
