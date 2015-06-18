@@ -287,6 +287,20 @@ else
   sed -i -e "s/^\s\+- PRIVATE_DOMAIN_PLACEHOLDER//" deployments/cf-openstack-${CF_SIZE}.yml
 fi
 
+if [[ $INSTALL_LOGSEARCH == "true" ]]; then
+    if [[ $(grep -v syslog deployments/cf-openstack-${CF_SIZE}.yml)  ]]; then
+        INSERT_AT=$(grep -n cf-networking.yml deployments/cf-openstack-${CF_SIZE}.yml  | cut -d : -f 1)
+        sed -i "${INSERT_AT}i\ \ - cf-syslog.yml" deployments/cf-openstack-${CF_SIZE}.yml
+
+        cat <<EOF >> deployments/cf-openstack-${CF_SIZE}.yml
+
+  syslog_daemon_config:
+    address: ${IPMASK}.6.7
+    port: 5515
+EOF
+    fi
+fi
+
 
 bosh upload release --skip-if-exists https://bosh.io/d/github.com/cloudfoundry/cf-release?v=${CF_RELEASE_VERSION}
 bosh deployment cf-openstack-${CF_SIZE}
