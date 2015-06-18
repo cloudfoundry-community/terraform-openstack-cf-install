@@ -26,6 +26,13 @@ resource "openstack_networking_network_v2" "internal_net_docker_services" {
   tenant_id = "${var.tenant_id}"
 }
 
+resource "openstack_networking_network_v2" "internal_net_logsearch" {
+  region = "${var.region}"
+  name = "internal-net-logsearch"
+  admin_state_up = "true"
+  tenant_id = "${var.tenant_id}"
+}
+
 resource "openstack_networking_subnet_v2" "cf_subnet" {
   name = "cf-subnet"
   region = "${var.region}"
@@ -59,6 +66,16 @@ resource "openstack_networking_subnet_v2" "docker_services_subnet" {
   dns_nameservers = ["8.8.4.4","8.8.8.8"]
 }
 
+resource "openstack_networking_subnet_v2" "logsearch_subnet" {
+  name = "logsearch-subnet"
+  region = "${var.region}"
+  network_id = "${openstack_networking_network_v2.internal_net_logsearch.id}"
+  cidr = "${var.network}.6.0/24"
+  ip_version = 4
+  tenant_id = "${var.tenant_id}"
+  enable_dhcp = "true"
+  dns_nameservers = ["8.8.4.4","8.8.8.8"]
+}
 
 output "internal_network" {
   value = "${openstack_networking_subnet_v2.cf_subnet.id}"
@@ -80,20 +97,24 @@ resource "openstack_networking_router_interface_v2" "int-ext-interface" {
   region = "${var.region}"
   router_id = "${openstack_networking_router_v2.router.id}"
   subnet_id = "${openstack_networking_subnet_v2.cf_subnet.id}"
-
 }
 
 resource "openstack_networking_router_interface_v2" "int-ext-docker-services-interface" {
   region = "${var.region}"
   router_id = "${openstack_networking_router_v2.router.id}"
   subnet_id = "${openstack_networking_subnet_v2.docker_services_subnet.id}"
-
 }
 
 resource "openstack_networking_router_interface_v2" "int-ext-lb-interface" {
   region = "${var.region}"
   router_id = "${openstack_networking_router_v2.router.id}"
   subnet_id = "${openstack_networking_subnet_v2.lb_subnet.id}"
+}
+
+resource "openstack_networking_router_interface_v2" "int-ext-logsearch-interface" {
+  region = "${var.region}"
+  router_id = "${openstack_networking_router_v2.router.id}"
+  subnet_id = "${openstack_networking_subnet_v2.logsearch_subnet.id}"
 }
 
 resource "openstack_compute_keypair_v2" "keypair" {
@@ -288,8 +309,16 @@ output "docker_subnet" {
   value = "${openstack_networking_network_v2.internal_net_docker_services.id}"
 }
 
+output "logsearch_subnet" {
+  value = "${openstack_networking_network_v2.internal_net_logsearch.id}"
+}
+
 output "install_docker_services" {
   value = "${var.install_docker_services}"
+}
+
+output "install_logsearch" {
+  value = "${var.install_logsearch}"
 }
 
 output "docker_subnet_cidr" {
