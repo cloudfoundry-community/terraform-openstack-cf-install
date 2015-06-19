@@ -32,7 +32,7 @@ variable "cf_domain" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.1.11"
+  default = "v1.1.12"
 }
 
 variable "cf_size" {
@@ -155,6 +155,12 @@ variable "dns2" {
 variable private_cf_domains {
     default = ""
 }
+
+variable additional_cf_sg_allow_1 { default = "" }
+variable additional_cf_sg_allow_2 { default = "" }
+variable additional_cf_sg_allow_3 { default = "" }
+variable additional_cf_sg_allow_4 { default = "" }
+variable additional_cf_sg_allow_5 { default = "" }
 
 variable install_logsearch {
     default = "false"

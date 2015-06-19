@@ -41,6 +41,7 @@ PRIVATE_DOMAINS=${20}
 
 INSTALL_LOGSEARCH=${21}
 LS1_SUBNET=${22}
+CF_SG_ALLOWS=${23}
 
 BACKBONE_Z1_COUNT=COUNT
 API_Z1_COUNT=COUNT
@@ -285,6 +286,19 @@ if [[ -n "$PRIVATE_DOMAINS" ]]; then
 else
   sed -i -e "s/^\(\s\+\)internal_only_domains:\$/\1internal_only_domains: []/" deployments/cf-openstack-${CF_SIZE}.yml
   sed -i -e "s/^\s\+- PRIVATE_DOMAIN_PLACEHOLDER//" deployments/cf-openstack-${CF_SIZE}.yml
+fi
+
+if [[ -n "$CF_SG_ALLOWS" ]]; then
+  replacement_text=""
+  for cidr in $(echo $CF_SG_ALLOWS | tr "," "\n"); do
+    if [[ -n "$cidr" ]]; then
+      replacement_text="${replacement_text}{\"protocol\":\"all\",\"destination\":\"${cidr}\"},"
+    fi
+  done
+  if [[ -n "$replacement_text" ]]; then
+    replacement_text=$(echo $replacement_text | sed 's/,$//')
+    sed -i -e "s|^\(\s\+additional_security_group_rules:\s\+\).*|\1[$replacement_text]|" deployments/cf-openstack-${CF_SIZE}.yml
+  fi
 fi
 
 if [[ $INSTALL_LOGSEARCH == "true" ]]; then
