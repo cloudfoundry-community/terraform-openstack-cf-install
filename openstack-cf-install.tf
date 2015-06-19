@@ -372,5 +372,5 @@ output "private_cf_domains" {
   value = "${var.private_cf_domains}"
 }
 output "additional_cf_sg_allows" {
-  value = "${var.additional_cf_sg_allow_1},${var.additional_cf_sg_allow_2},${var.additional_cf_sg_allow_3},${var.additional_cf_sg_allow_4},${var.additional_cf_sg_allow_5},${openstack_networking_subnet_v2.docker_services_subnet.cidr},${openstack_networking_subnet_v2.cf_subnet.cidr},${openstack_networking_floatingip_v2.cf_fp.address}"
+  value = "${var.additional_cf_sg_allow_1},${var.additional_cf_sg_allow_2},${var.additional_cf_sg_allow_3},${var.additional_cf_sg_allow_4},${var.additional_cf_sg_allow_5},${openstack_networking_subnet_v2.docker_services_subnet.cidr},${openstack_networking_subnet_v2.cf_subnet.cidr},${openstack_networking_subnet_v2.lb_subnet.cidr},${openstack_networking_floatingip_v2.cf_fp.address}"
 }
