@@ -70,7 +70,7 @@ resource "openstack_networking_subnet_v2" "logsearch_subnet" {
   name = "logsearch-subnet"
   region = "${var.region}"
   network_id = "${openstack_networking_network_v2.internal_net_logsearch.id}"
-  cidr = "${var.network}.6.0/24"
+  cidr = "${var.network}.7.0/24"
   ip_version = 4
   tenant_id = "${var.tenant_id}"
   enable_dhcp = "true"
