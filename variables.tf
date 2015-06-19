@@ -153,3 +153,7 @@ variable additional_cf_sg_allow_2 { default = "" }
 variable additional_cf_sg_allow_3 { default = "" }
 variable additional_cf_sg_allow_4 { default = "" }
 variable additional_cf_sg_allow_5 { default = "" }
+
+variable install_logsearch {
+    default = "false"
+}
