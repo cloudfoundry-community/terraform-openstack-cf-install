@@ -374,3 +374,12 @@ output "private_cf_domains" {
 output "additional_cf_sg_allows" {
   value = "${var.additional_cf_sg_allow_1},${var.additional_cf_sg_allow_2},${var.additional_cf_sg_allow_3},${var.additional_cf_sg_allow_4},${var.additional_cf_sg_allow_5},${openstack_networking_subnet_v2.docker_services_subnet.cidr},${openstack_networking_subnet_v2.cf_subnet.cidr},${openstack_networking_subnet_v2.lb_subnet.cidr},${openstack_networking_floatingip_v2.cf_fp.address}"
 }
+
+output "backbone_resource_pool"        { value = "${var.backbone_resource_pool}" }
+output "data_resource_pool"            { value = "${var.data_resource_pool}" }
+output "public_haproxy_resource_pool"  { value = "${var.public_haproxy_resource_pool}" }
+output "private_haproxy_resource_pool" { value = "${var.private_haproxy_resource_pool}" }
+output "api_resource_pool"             { value = "${var.api_resource_pool}" }
+output "services_resource_pool"        { value = "${var.services_resource_pool}" }
+output "health_resource_pool"          { value = "${var.health_resource_pool}" }
+output "runner_resource_pool"          { value = "${var.runner_resource_pool}" }
