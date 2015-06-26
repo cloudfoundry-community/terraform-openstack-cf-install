@@ -56,6 +56,15 @@ SERVICES_Z2_COUNT=COUNT
 HEALTH_Z2_COUNT=COUNT
 RUNNER_Z2_COUNT=COUNT
 
+BACKBONE_POOL=POOL
+DATA_POOL=POOL
+PUBLIC_HAPROXY_POOL=POOL
+PRIVATE_HAPROXY_POOL=POOL
+API_POOL=POOL
+SERVICES_POOL=POOL
+HEALTH_POOL=POOL
+RUNNER_POOL=POOL
+
 boshDirectorHost="${IPMASK}.2.4"
 
 if [[ $DEBUG == "true" ]]; then
@@ -278,6 +287,14 @@ fi
   -e "s|~ # HTTP_PROXY|${HTTP_PROXY}|" \
   -e "s|~ # HTTPS_PROXY|${HTTPS_PROXY}|" \
   -e "s/~ # NO_PROXY/${NO_PROXY}/" \
+  -e "s/backbone:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/backbone:\1${BACKBONE_POOL}\2/" \
+  -e "s/data:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/data:\1${DATA_POOL}\2/" \
+  -e "s/public_haproxy:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/public_haproxy:\1${PUBLIC_HAPROXY_POOL}\2/" \
+  -e "s/private_haproxy:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/private_haproxy:\1${PRIVATE_HAPROXY_POOL}\2/" \
+  -e "s/api:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/api:\1${API_POOL}\2/" \
+  -e "s/services:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/services:\1${SERVICES_POOL}\2/" \
+  -e "s/health:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/health:\1${HEALTH_POOL}\2/" \
+  -e "s/runner:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/runner:\1${RUNNER_POOL}\2/" \
   deployments/cf-openstack-${CF_SIZE}.yml
 
 if [[ -n "$PRIVATE_DOMAINS" ]]; then
