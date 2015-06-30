@@ -383,3 +383,14 @@ output "api_resource_pool"             { value = "${var.api_resource_pool}" }
 output "services_resource_pool"        { value = "${var.services_resource_pool}" }
 output "health_resource_pool"          { value = "${var.health_resource_pool}" }
 output "runner_resource_pool"          { value = "${var.runner_resource_pool}" }
+
+output "dns1" {
+  value = "${var.dns1}"
+}
+output "dns2" {
+  value = "${var.dns2}"
+}
+
+output "docker_boshworkspace_version" {
+  value = "${var.docker_boshworkspace_version}"
+}

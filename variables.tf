@@ -31,6 +31,10 @@ variable "cf_domain" {
   default = "XIP"
 }
 
+variable "docker_boshworkspace_version" {
+  default = "master"
+}
+
 variable "cf_boshworkspace_version" {
   default = "v1.1.13"
 }
