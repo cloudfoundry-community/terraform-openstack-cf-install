@@ -66,6 +66,9 @@ assure_string_in_file $filename_provision 'PRIVATE_DOMAINS=${20}' "PRIVATE_DOMAI
 assure_string_in_file $filename_provision 'INSTALL_LOGSEARCH=${21}' "INSTALL_LOGSEARCH=\"$(terraform output -state="${state_file}" install_logsearch)\""
 assure_string_in_file $filename_provision 'LS1_SUBNET=${22}' "LS1_SUBNET=\"$(terraform output -state="${state_file}" logsearch_subnet)\""
 assure_string_in_file $filename_provision 'CF_SG_ALLOWS=${23}' "CF_SG_ALLOWS=\"$(terraform output -state="${state_file}" additional_cf_sg_allows)\""
+assure_string_in_file $filename_provision 'DNS1=${24}' "DNS1=\"$(terraform output -state="${state_file}" dns1)\""
+assure_string_in_file $filename_provision 'DNS2=${25}' "DNS2=\"$(terraform output -state="${state_file}" dns2)\""
+assure_string_in_file $filename_provision 'DOCKER_BOSHWORKSPACE_VERSION=master' "DOCKER_BOSHWORKSPACE_VERSION=\"$(terraform output -state="${state_file}" docker_boshworkspace_version)\""
 
 for job in BACKBONE API SERVICES HEALTH RUNNER; do
 	for zone in Z1 Z2; do

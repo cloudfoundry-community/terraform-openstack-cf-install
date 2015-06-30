@@ -45,6 +45,11 @@ INSTALL_LOGSEARCH=${21}
 LS1_SUBNET=${22}
 CF_SG_ALLOWS=${23}
 
+DNS1=${24}
+DNS2=${25}
+
+DOCKER_BOSHWORKSPACE_VERSION=master
+
 BACKBONE_Z1_COUNT=COUNT
 API_Z1_COUNT=COUNT
 SERVICES_Z1_COUNT=COUNT
@@ -369,7 +374,7 @@ if [[ $INSTALL_DOCKER == "true" ]]; then
 
   cd ~/workspace/deployments
   if [[ ! -d "$HOME/workspace/deployments/docker-services-boshworkspace" ]]; then
-    git clone https://github.com/cloudfoundry-community/docker-services-boshworkspace.git
+    git clone  --branch ${DOCKER_BOSHWORKSPACE_VERSION} https://github.com/cloudfoundry-community/docker-services-boshworkspace.git
   fi
 
   echo "Update the docker-aws-vpc.yml with cf-boshworkspace parameters"
@@ -378,7 +383,16 @@ if [[ $INSTALL_DOCKER == "true" ]]; then
   /bin/sed -i \
     -e "s/SUBNET_ID/${DOCKER_SUBNET}/g" \
     -e "s/DOCKER_SG/${CF_SG}/g" \
+    -e "s|dns_servers: \+\[.*\]|dns_servers: [\"${DNS1}\", \"${DNS2}\"]|" \
     "${dockerDeploymentManifest}"
+
+  if [[ -n ${HTTP_PROXY} || -n ${HTTPS_PROXY} ]]; then
+    /bin/sed -i \
+      -e "s|~ # HTTP_PROXY|${HTTP_PROXY}|" \
+      -e "s|~ # HTTPS_PROXY|${HTTPS_PROXY}|" \
+      -e "s|~ # NO_PROXY|${NO_PROXY}|" \
+      "${dockerDeploymentManifest}"
+  fi
 
   cd ~/workspace/deployments/docker-services-boshworkspace
   bundle install
