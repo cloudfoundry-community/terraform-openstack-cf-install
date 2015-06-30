@@ -48,6 +48,8 @@ CF_SG_ALLOWS=${23}
 DNS1=${24}
 DNS2=${25}
 
+OS_TIMEOUT=${26}
+
 DOCKER_BOSHWORKSPACE_VERSION=master
 
 BACKBONE_Z1_COUNT=COUNT
@@ -136,13 +138,10 @@ cd $HOME
 
 # Install RVM
 
-if [[ ! -d "$HOME/rvm" ]]; then
-  git clone https://github.com/rvm/rvm
-fi
-
 if [[ ! -d "$HOME/.rvm" ]]; then
-  cd rvm
-  ./install
+  cd $HOME
+  gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+  curl -sSL https://get.rvm.io | bash -s stable
 fi
 
 cd $HOME
@@ -182,7 +181,7 @@ provider:
     openstack_region: ${OS_REGION}
   options:
     boot_from_volume: false
-  state_timeout: 600
+  state_timeout: ${OS_TIMEOUT}
 address:
   subnet_id: ${CF_SUBNET1}
   ip: ${boshDirectorHost}
