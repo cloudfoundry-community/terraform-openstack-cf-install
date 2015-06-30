@@ -156,6 +156,10 @@ variable "dns2" {
   default = "8.8.8.8"
 }
 
+variable "os_timeout" {
+  default = "600"
+}
+
 variable private_cf_domains {
     default = ""
 }

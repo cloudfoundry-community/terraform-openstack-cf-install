@@ -69,6 +69,7 @@ assure_string_in_file $filename_provision 'CF_SG_ALLOWS=${23}' "CF_SG_ALLOWS=\"$
 assure_string_in_file $filename_provision 'DNS1=${24}' "DNS1=\"$(terraform output -state="${state_file}" dns1)\""
 assure_string_in_file $filename_provision 'DNS2=${25}' "DNS2=\"$(terraform output -state="${state_file}" dns2)\""
 assure_string_in_file $filename_provision 'DOCKER_BOSHWORKSPACE_VERSION=master' "DOCKER_BOSHWORKSPACE_VERSION=\"$(terraform output -state="${state_file}" docker_boshworkspace_version)\""
+assure_string_in_file $filename_provision 'OS_TIMEOUT=${26}' "OS_TIMEOUT=\"$(terraform output -state="${state_file}" os_timeout)\""
 
 for job in BACKBONE API SERVICES HEALTH RUNNER; do
 	for zone in Z1 Z2; do

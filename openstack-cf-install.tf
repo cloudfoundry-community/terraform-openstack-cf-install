@@ -394,3 +394,7 @@ output "dns2" {
 output "docker_boshworkspace_version" {
   value = "${var.docker_boshworkspace_version}"
 }
+
+output "os_timeout" {
+  value = "${var.os_timeout}"
+}
