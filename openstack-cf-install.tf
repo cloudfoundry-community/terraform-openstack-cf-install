@@ -398,3 +398,7 @@ output "docker_boshworkspace_version" {
 output "os_timeout" {
   value = "${var.os_timeout}"
 }
+
+output "offline_java_buildpack" {
+  value = "${var.offline_java_buildpack}"
+}
