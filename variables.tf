@@ -36,7 +36,7 @@ variable "docker_boshworkspace_version" {
 }
 
 variable "cf_boshworkspace_version" {
-  default = "v1.1.13"
+  default = "v1.1.14"
 }
 
 variable "cf_size" {
@@ -182,3 +182,5 @@ variable "api_resource_pool"             { default = "medium" }
 variable "services_resource_pool"        { default = "medium" }
 variable "health_resource_pool"          { default = "medium" }
 variable "runner_resource_pool"          { default = "runner" }
+
+variable "offline_java_buildpack" { default = "false" }

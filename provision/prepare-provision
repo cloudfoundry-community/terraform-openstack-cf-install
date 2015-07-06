@@ -70,6 +70,7 @@ assure_string_in_file $filename_provision 'DNS1=${24}' "DNS1=\"$(terraform outpu
 assure_string_in_file $filename_provision 'DNS2=${25}' "DNS2=\"$(terraform output -state="${state_file}" dns2)\""
 assure_string_in_file $filename_provision 'DOCKER_BOSHWORKSPACE_VERSION=master' "DOCKER_BOSHWORKSPACE_VERSION=\"$(terraform output -state="${state_file}" docker_boshworkspace_version)\""
 assure_string_in_file $filename_provision 'OS_TIMEOUT=${26}' "OS_TIMEOUT=\"$(terraform output -state="${state_file}" os_timeout)\""
+assure_string_in_file $filename_provision 'OFFLINE_JAVA_BUILDPACK=${27}' "OFFLINE_JAVA_BUILDPACK=\"$(terraform output -state="${state_file}" offline_java_buildpack)\""
 
 for job in BACKBONE API SERVICES HEALTH RUNNER; do
 	for zone in Z1 Z2; do

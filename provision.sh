@@ -50,6 +50,8 @@ DNS2=${25}
 
 OS_TIMEOUT=${26}
 
+OFFLINE_JAVA_BUILDPACK=${27}
+
 DOCKER_BOSHWORKSPACE_VERSION=master
 
 BACKBONE_Z1_COUNT=COUNT
@@ -300,6 +302,12 @@ fi
   -e "s/health:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/health:\1${HEALTH_POOL}\2/" \
   -e "s/runner:\( \+\)[a-z\-\_A-Z0-1]\+\(.*# MARKER_FOR_POOL_PROVISION.*\)/runner:\1${RUNNER_POOL}\2/" \
   deployments/cf-openstack-${CF_SIZE}.yml
+
+if [[ $OFFLINE_JAVA_BUILDPACK == "true" ]]; then
+  sed -i\
+    -e "s/^#  - offline-java-buildpack.yml$/  - offline-java-buildpack.yml/" \
+    deployments/cf-openstack-${CF_SIZE}.yml
+fi
 
 if [[ -n "$PRIVATE_DOMAINS" ]]; then
   for domain in $(echo $PRIVATE_DOMAINS | tr "," "\n"); do
