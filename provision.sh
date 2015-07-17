@@ -340,7 +340,7 @@ if [[ $INSTALL_LOGSEARCH == "true" ]]; then
         cat <<EOF >> deployments/cf-openstack-${CF_SIZE}.yml
 
   syslog_daemon_config:
-    address: ${IPMASK}.6.7
+    address: ${IPMASK}.7.7
     port: 5515
 EOF
     fi
