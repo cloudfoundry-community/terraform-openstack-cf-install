@@ -74,7 +74,12 @@ SERVICES_POOL=POOL
 HEALTH_POOL=POOL
 RUNNER_POOL=POOL
 
+SKIP_SSL_VALIDATION=false
+
 boshDirectorHost="${IPMASK}.2.4"
+
+logsearch_syslog="${IPMASK}.7.7"
+logsearch_es_ip="${IPMASK}.7.6"
 
 if [[ $DEBUG == "true" ]]; then
   set -x
@@ -250,6 +255,7 @@ DIRECTOR_UUID=$(bosh status | grep UUID | awk '{print $2}')
 # If CF_DOMAIN is set to XIP, then use XIP.IO. Otherwise, use the variable
 if [ $CF_DOMAIN == "XIP" ]; then
   CF_DOMAIN="${CF_IP}.xip.io"
+  SKIP_SSL_VALIDATION="true"
 fi
 
 echo "Install Traveling CF"
@@ -340,7 +346,7 @@ if [[ $INSTALL_LOGSEARCH == "true" ]]; then
         cat <<EOF >> deployments/cf-openstack-${CF_SIZE}.yml
 
   syslog_daemon_config:
-    address: ${IPMASK}.7.7
+    address: ${logsearch_syslog}
     port: 5515
 EOF
     fi
@@ -431,6 +437,7 @@ if [[ $INSTALL_LOGSEARCH == "true" ]]; then
              -e "s/CF_ADMIN_PASS/${CF_ADMIN_PASS}/g" \
              -e "s/CLOUDFOUNDRY_SG/${CF_SG}/g" \
              -e "s/LS1_SUBNET/${LS1_SUBNET}/g" \
+             -e "s/skip-ssl-validation: false/skip-ssl-validation: ${SKIP_SSL_VALIDATION}/g"\
              deployments/logsearch-openstack.yml
 
     bundle install
@@ -442,19 +449,18 @@ if [[ $INSTALL_LOGSEARCH == "true" ]]; then
     do bosh -n deploy
     done
 
-    es_ip=${IPMASK}.6.6
     # Install kibana dashboard
     cat .releases/logsearch-for-cloudfoundry/target/kibana4-dashboards.json \
-        | curl --data-binary @- http://${es_ip}:9200/_bulk
+        | curl --data-binary @- http://${logsearch_es_ip}:9200/_bulk
 
     # Fix Tile Map visualization # http://git.io/vLYabb
-    if [[ $(curl -s http://${es_ip}:9200/_template/ | grep -v geo_pointt) ]]; then
+    if [[ $(curl -s http://${logsearch_es_ip}:9200/_template/ | grep -v geo_pointt) ]]; then
         echo "installing default elasticsarch index template"
-        curl -XPUT http://${es_ip}:9200/_template/logstash -d \
+        curl -XPUT http://${logsearch_es_ip}:9200/_template/logstash -d \
              '{"template":"logstash-*","order":10,"settings":{"number_of_shards":4,"number_of_replicas":1,"index":{"query":{"default_field":"@message"},"store":{"compress":{"stored":true,"tv":true}}}},"mappings":{"_default_":{"_all":{"enabled":false},"_source":{"compress":true},"_ttl":{"enabled":true,"default":"2592000000"},"dynamic_templates":[{"string_template":{"match":"*","mapping":{"type":"string","index":"not_analyzed"},"match_mapping_type":"string"}}],"properties":{"@message":{"type":"string","index":"analyzed"},"@tags":{"type":"string","index":"not_analyzed"},"@timestamp":{"type":"date","index":"not_analyzed"},"@type":{"type":"string","index":"not_analyzed"},"message":{"type":"string","index":"analyzed"},"message_data":{"type":"object","properties":{"Message":{"type":"string","index":"analyzed"}}},"geoip":{"properties":{"location":{"type":"geo_point"}}}}}}}'
 
         echo "deleting all indexes since installed template only applies to new indexes"
-        curl -XDELETE http://${es_ip}:9200/logstash-*
+        curl -XDELETE http://${logsearch_es_ip}:9200/logstash-*
     fi
 fi
 
