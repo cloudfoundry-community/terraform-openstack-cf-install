@@ -429,7 +429,6 @@ if [[ $INSTALL_LOGSEARCH == "true" ]]; then
 
     cd logsearch-boshworkspace
 
-    CF_ADMIN_PASS=c1oudc0wc1oudc0w # Hardcoded in upstream template
     /bin/sed -i \
              -e "s/DIRECTOR_UUID/${DIRECTOR_UUID}/g" \
              -e "s/IPMASK/${IPMASK}/g" \
