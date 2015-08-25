@@ -402,3 +402,8 @@ output "os_timeout" {
 output "offline_java_buildpack" {
   value = "${var.offline_java_buildpack}"
 }
+
+output "ntp_servers" {
+  value = "${var.ntp_servers}"
+}
+
