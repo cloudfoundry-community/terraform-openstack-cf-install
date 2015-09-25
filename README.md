@@ -8,13 +8,6 @@ Architecture
 
 This will create a bastion host and CloudFoundry install that is confined to one subnet, pulling external IPs from a second subnet.
 
-Upstream Terraform issues
--------------------------
-
-Terraform does not yet officially support Openstack. Development of this terraform repo was done using an experimental provider available at [jrperritt/terraform](https://github.com/jrperritt/terraform/tree/openstack-gophercloud-v1.0) using the openstack-gophercloud-v1.0 branch. Hopefully that work will be merged into master at some point, and we could use that.
-
-- [![hashicorp/terraform/issues/51](https://github-shields.com/github/hashicorp/terraform/issues/51.svg)](https://github-shields.com/github/hashicorp/terraform/issues/51) - the issue for having terraform natively support Openstack.
-
 Upstream Cloud Foundry issues
 -----------------------------
 
@@ -37,10 +30,10 @@ You **must** being using at least terraform version 0.4.0 with the openstack pro
 
 ```
 $ terraform -v
-Terraform v0.4.0
+Terraform v0.6.3
 ```
 
-You can install terraform 0.4.0+ via [https://www.terraform.io/downloads.html]
+You can install terraform 0.6.3+ via [https://www.terraform.io/downloads.html]
 
 Your chosen region must have sufficient quota to spin up **all** of the machines. While building various bits, the install process can use up to 13 VMs, settling down to use 7 machines long-term (more, if you want more runners).
 

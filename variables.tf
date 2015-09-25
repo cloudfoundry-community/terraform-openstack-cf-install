@@ -7,6 +7,7 @@ variable "key_path" {}
 variable "public_key_path" {}
 variable "floating_ip_pool" {}
 variable "network_external_id" {}
+variable "ntp_servers" {}
 variable "region" {
   default = "RegionOne"
 }
