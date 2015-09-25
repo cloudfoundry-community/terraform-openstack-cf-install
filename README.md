@@ -112,8 +112,8 @@ Look in `variables.tf` to see all of the variables that can be set or overriden.
 ```
 network # The first two octets to use within the VPC, e.g. 10.0 or 192.168
 auth_url # The API of your Openstack instance to auth against, like http://10.2.95.100:5000/v2.0
-tenant_name # The name of the tenant to use - this must already be defined
-tenant_id # The ID of the tenant, might be the same as the tenant name
+tenant_name # The name of the tenant to use - this will be used to create names for your resources
+tenant_id # The ID of the tenant
 username # User to authenticate against the Openstack API
 password # Password for that user
 public_key_path # Literal path to public ssh key file on the computer running Terraform - /home/user/keys/example.pub

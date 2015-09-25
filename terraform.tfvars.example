@@ -1,7 +1,7 @@
 network = "192.168"
 auth_url="http://10.2.95.100:5000/v2.0"
 tenant_name="TENANT"
-tenant_id="MYTENANT"          # NOTE: tenant_id can be the same with tenant_name
+tenant_id="TENANT_ID"
 username="USER"
 password="PASS"
 public_key_path="/Users/myuser/.ssh/id_rsa.pub"
