@@ -26,14 +26,14 @@ You must create a separate user just for this purpose, that does **not** have ad
 
 Unlike the AWS version of this, you do not need to upload your SSH key before starting. Note the path to the pem/private key files that you want to use and we will put them in the config file further down.
 
-You **must** being using at least terraform version 0.4.0 with the openstack provider compiled and in the same directory as your terraform binary.
+You **must** being using at least terraform version 0.6.3 with the openstack provider compiled and in the same directory as your terraform binary.
 
 ```
 $ terraform -v
 Terraform v0.6.3
 ```
 
-You can install terraform 0.6.3+ via [https://www.terraform.io/downloads.html]
+You can install terraform 0.6.3+ via [https://www.terraform.io/downloads.html] or using `brew` [package manager](http://brew.sh/) on Mac OS X.
 
 Your chosen region must have sufficient quota to spin up **all** of the machines. While building various bits, the install process can use up to 13 VMs, settling down to use 7 machines long-term (more, if you want more runners).
 
