@@ -1,6 +1,6 @@
 provider "openstack" {
   auth_url = "${var.auth_url}"
-  tenant_name = "${var.tenant_name}"
+  tenant_id = "${var.tenant_id}"
   user_name = "${var.username}"
   password = "${var.password}"
 }

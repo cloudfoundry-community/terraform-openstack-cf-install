@@ -1,5 +1,4 @@
 variable "auth_url" {}
-variable "tenant_name" {}
 variable "tenant_id" {}
 variable "username" {}
 variable "password" {}
@@ -7,6 +6,12 @@ variable "key_path" {}
 variable "public_key_path" {}
 variable "floating_ip_pool" {}
 variable "network_external_id" {}
+variable "ntp_servers" {}
+
+variable "tenant_name" {
+  default = "cf"
+}
+
 variable "region" {
   default = "RegionOne"
 }

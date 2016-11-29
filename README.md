@@ -8,13 +8,6 @@ Architecture
 
 This will create a bastion host and CloudFoundry install that is confined to one subnet, pulling external IPs from a second subnet.
 
-Upstream Terraform issues
--------------------------
-
-Terraform does not yet officially support Openstack. Development of this terraform repo was done using an experimental provider available at [jrperritt/terraform](https://github.com/jrperritt/terraform/tree/openstack-gophercloud-v1.0) using the openstack-gophercloud-v1.0 branch. Hopefully that work will be merged into master at some point, and we could use that.
-
-- [![hashicorp/terraform/issues/51](https://github-shields.com/github/hashicorp/terraform/issues/51.svg)](https://github-shields.com/github/hashicorp/terraform/issues/51) - the issue for having terraform natively support Openstack.
-
 Upstream Cloud Foundry issues
 -----------------------------
 
@@ -33,14 +26,14 @@ You must create a separate user just for this purpose, that does **not** have ad
 
 Unlike the AWS version of this, you do not need to upload your SSH key before starting. Note the path to the pem/private key files that you want to use and we will put them in the config file further down.
 
-You **must** being using at least terraform version 0.4.0 with the openstack provider compiled and in the same directory as your terraform binary.
+You **must** being using at least terraform version 0.6.3 with the openstack provider compiled and in the same directory as your terraform binary.
 
 ```
 $ terraform -v
-Terraform v0.4.0
+Terraform v0.6.3
 ```
 
-You can install terraform 0.4.0+ via [https://www.terraform.io/downloads.html]
+You can install terraform 0.6.3+ via [https://www.terraform.io/downloads.html] or using `brew` [package manager](http://brew.sh/) on Mac OS X.
 
 Your chosen region must have sufficient quota to spin up **all** of the machines. While building various bits, the install process can use up to 13 VMs, settling down to use 7 machines long-term (more, if you want more runners).
 
@@ -119,8 +112,8 @@ Look in `variables.tf` to see all of the variables that can be set or overriden.
 ```
 network # The first two octets to use within the VPC, e.g. 10.0 or 192.168
 auth_url # The API of your Openstack instance to auth against, like http://10.2.95.100:5000/v2.0
-tenant_name # The name of the tenant to use - this must already be defined
-tenant_id # The ID of the tenant, might be the same as the tenant name
+tenant_name # The name of the tenant to use - this will be used to create names for your resources
+tenant_id # The ID of the tenant
 username # User to authenticate against the Openstack API
 password # Password for that user
 public_key_path # Literal path to public ssh key file on the computer running Terraform - /home/user/keys/example.pub
