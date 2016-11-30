@@ -28,9 +28,9 @@ desc="Can we fetch the dependencies?"
 OUTPUT=$(terraform get -update)
 CLEANUP "$?" "$desc" "Unable to fetch the modules we depend on"
 
-#desc="Does the plan compile?"
-#OUTPUT=$(terraform plan -var-file terraform.tfvars.example)
-#CLEANUP "$?" "$desc" "$OUTPUT"
+desc="Does the plan compile?"
+OUTPUT=$(terraform validate -var-file terraform.tfvars.example)
+CLEANUP "$?" "$desc" "$OUTPUT"
 
 #desc="Did the baseline terraform plan change?"
 #terraform plan -var-file terraform.tfvars.example &> $TFILE
